@@ -1,0 +1,91 @@
+---
+export const prerender = false;
+
+import Header from "../../components/header/index.astro";
+import "../../style/index.css";
+import { getSanityPosts } from "../../utils/getSanityPosts";
+
+const posts = await getSanityPosts();
+const nonTechnicalPosts = posts.filter(
+    (post: any) => !post.tags?.includes("technical"),
+);
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Non-Technical Thoughts | Articles</title>
+        <link rel="stylesheet" href="/src/style/index.css" />
+    </head>
+    <body>
+        <Header title="Non-Technical Thoughts" />
+        <main class="max-w-4xl mx-auto px-4 py-8">
+            <div class="mb-8">
+                <a href="/articles" class="text-default text-sm hover:underline"
+                    >← Back to Selection</a
+                >
+            </div>
+
+            <header class="mb-12">
+                <h1 class="text-xl font-bold mb-4 text-default italic">
+                    Non-Technical Thoughts
+                </h1>
+                <p class="text-sm italic opacity-80">
+                    Reflections on history, personal experiences, and the
+                    "unfiltered" side of my journey.
+                </p>
+            </header>
+
+            <section class="mb-12">
+                {
+                    nonTechnicalPosts.length > 0 ? (
+                        <div class="space-y-12">
+                            {nonTechnicalPosts.map((post: any) => (
+                                <div class="">
+                                    <h3 class="text-lg italic font-bold mb-2">
+                                        <a
+                                            href={`/articles/${post.slug.current}`}
+                                            class="text-default hover:underline"
+                                        >
+                                            {post.title}
+                                        </a>
+                                    </h3>
+                                    {post.description && (
+                                        <p class="mb-3 text-sm italic opacity-80">
+                                            {post.description}
+                                        </p>
+                                    )}
+                                    <p class="text-xs italic opacity-60">
+                                        Published on{" "}
+                                        {post.publishedAt
+                                            ? new Date(
+                                                  post.publishedAt,
+                                              ).toLocaleDateString("en-US", {
+                                                  dateStyle: "long",
+                                              })
+                                            : "Unknown"}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p class="italic opacity-60">
+                            Nothing here yet. Stay tuned!
+                        </p>
+                    )
+                }
+            </section>
+
+            <footer
+                class="mt-20 pt-8 text-center text-sm border-t border-gray-800/30"
+            >
+                <p class="text-gray-500 italic">
+                    "History is a gallery of pictures in which there are few
+                    originals and many copies." — Keep exploring.
+                </p>
+            </footer>
+        </main>
+    </body>
+</html>

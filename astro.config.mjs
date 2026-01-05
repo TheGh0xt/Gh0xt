@@ -14,7 +14,7 @@ import sanity from "@sanity/astro";
 export default defineConfig({
   output: 'server',
   integrations: [tailwind(), react(), mdx(), sanity({
-    projectId: '6jsm7r00',
+    projectId: 'kciy3tvs',
     dataset: 'production',
    
     useCdn: false,

@@ -1,23 +1,42 @@
 ---
-    import projects from '../data/projects.json'
+import projects from "../data/projects.json";
 ---
 
 <section class="mb-12" id="projects">
-    <h2 class="ibm-plex-mono-semibold text-xl mb-4">Highlights</h2>
-    <p class="text-sm ibm-plex-mono-regular text-gray-400 mb-6">
-        I've worked on many private services and applications, but these are some of the public ones.
+    <h2 class="ibm-plex-mono-semibold text-xl mb-4">The Forge</h2>
+    <p class="text-sm ibm-plex-mono-regular text-gray-400 mb-8 leading-relaxed">
+        While much of my work lives within private infrastructures and secure
+        backend ecosystems, I will be stepping out to build public projects for real world applications.
+        <br /><br />
+        <span class="italic text-default"
+            >Stay tuned—something resilient is being built.</span
+        >
     </p>
-    <div class="">
-        {projects.map((project) => (
-            <div class="p-4  hover:bg-gray-100/5 rounded-lg
-            transition duration-300">
-                <a href={project.url} target="_blank" >
-                    <h3 class="text-md ibm-plex-mono-semibold bg-transparent text-default">{project.name}</h3>
-                </a>
-                <a href={project.url} target="_blank">
-                    <p class="text-sm ibm-plex-mono-regular bg-transparent mt-2 text-gray-400 leading-6 !italic">{project.description}</p>
-                </a>
-            </div>
-        ))}
+
+    <div class="space-y-4">
+        {
+            projects.length > 0 && projects[0].name !== "" ? (
+                projects.map((project) => (
+                    <div class="p-4 hover:bg-gray-100/5 rounded-lg border border-transparent hover:border-gray-800 transition duration-300">
+                        <a href={project.url} target="_blank">
+                            <h3 class="text-md ibm-plex-mono-semibold bg-transparent text-default">
+                                {project.name}
+                            </h3>
+                        </a>
+                        <a href={project.url} target="_blank">
+                            <p class="text-sm ibm-plex-mono-regular bg-transparent mt-2 text-gray-400 leading-6 !italic">
+                                {project.description}
+                            </p>
+                        </a>
+                    </div>
+                ))
+            ) : (
+                <div class="p-8 border border-dashed border-gray-800 rounded-lg text-center">
+                    <p class="text-xs italic opacity-40 uppercase tracking-widest">
+                        Initial commits in progress...
+                    </p>
+                </div>
+            )
+        }
     </div>
 </section>

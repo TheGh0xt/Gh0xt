@@ -1,0 +1,88 @@
+---
+export const prerender = false;
+
+import Header from "../../components/header/index.astro";
+import "../../style/index.css";
+import { getSanityPosts } from "../../utils/getSanityPosts";
+
+const posts = await getSanityPosts();
+const technicalPosts = posts.filter((post: any) =>
+    post.tags?.includes("technical"),
+);
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Technical Articles | Articles</title>
+        <link rel="stylesheet" href="/src/style/index.css" />
+    </head>
+    <body>
+        <Header title="Technical Articles" />
+        <main class="max-w-4xl mx-auto px-4 py-8">
+            <div class="mb-8">
+                <a href="/articles" class="text-default text-sm hover:underline"
+                    >← Back to Selection</a
+                >
+            </div>
+
+            <header class="mb-12">
+                <h1 class="text-xl font-bold mb-4 text-default italic">
+                    Technical Articles
+                </h1>
+                <p class="text-sm italic opacity-80">
+                    Deep dives, tutorials, and explorations into the world of
+                    software engineering and systems architecture.
+                </p>
+            </header>
+
+            <section class="mb-12">
+                {
+                    technicalPosts.length > 0 ? (
+                        <div class="space-y-12">
+                            {technicalPosts.map((post: any) => (
+                                <div class="">
+                                    <h3 class="text-lg italic font-bold mb-2">
+                                        <a
+                                            href={`/articles/${post.slug.current}`}
+                                            class="text-default hover:underline"
+                                        >
+                                            {post.title}
+                                        </a>
+                                    </h3>
+                                    {post.description && (
+                                        <p class="mb-3 text-sm italic opacity-80">
+                                            {post.description}
+                                        </p>
+                                    )}
+                                    <p class="text-xs italic opacity-60">
+                                        Published on{" "}
+                                        {post.publishedAt
+                                            ? new Date(
+                                                  post.publishedAt,
+                                              ).toLocaleDateString("en-US", {
+                                                  dateStyle: "long",
+                                              })
+                                            : "Unknown"}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p class="italic opacity-60">Coming soon...</p>
+                    )
+                }
+            </section>
+
+            <footer
+                class="mt-20 pt-8 text-center text-sm border-t border-gray-800/30"
+            >
+                <p class="text-gray-500 italic">
+                    May your code be lean and your architecture resilient.
+                </p>
+            </footer>
+        </main>
+    </body>
+</html>

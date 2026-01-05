@@ -1,0 +1,165 @@
+---
+export const prerender = false;
+
+import Header from "../../components/header/index.astro";
+import "../../style/index.css";
+import { getSanityPostBySlug } from "../../utils/getSanityPostBySlug";
+import { portableTextToHtml } from "../../utils/portableTextToHtml";
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return new Response(null, {
+    status: 404,
+    statusText: "Not Found",
+  });
+}
+
+const post = await getSanityPostBySlug(slug);
+
+if (!post) {
+  return new Response(null, {
+    status: 404,
+    statusText: "Note not found",
+  });
+}
+
+const { title, description: desc, tags, publishedAt, body } = post;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content={desc || "Personal articles and thoughts"}
+    />
+    <meta name="author" content="Adetoye Anointing" />
+    <meta property="og:title" content={title} />
+    <meta
+      property="og:description"
+      content={desc || "Personal articles and thoughts"}
+    />
+    <meta property="og:type" content="article" />
+    <meta
+      property="article:published_time"
+      content={publishedAt ? new Date(publishedAt).toISOString() : ""}
+    />
+    <!-- @ts-ignore -->
+    {
+      tags &&
+        tags.map((tag: string) => <meta property="article:tag" content={tag} />)
+    }
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta
+      name="twitter:description"
+      content={desc || "Personal articles and thoughts"}
+    />
+    <title>{title} | Articles</title>
+    <link rel="stylesheet" href="/src/style/index.css" />
+  </head>
+  <body>
+    <Header title={title} />
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+      <div class="w-fit max-w-full flex items-start gap-2 mt-6 mx-auto">
+        <main class="container">
+          <h1
+            class="text-xl md:text-2xl italic font-bold leading-tight tracking-normal text-default"
+          >
+            {title}
+          </h1>
+          {desc && <p class="text-md mt-4 mb-6 italic">{desc}</p>}
+          <p class="mb-8 text-sm italic">
+            Published on <b
+              >{
+                publishedAt
+                  ? new Date(publishedAt).toLocaleDateString("en-US", {
+                      dateStyle: "long",
+                    })
+                  : "Unknown"
+              }</b>
+          </p>
+          <article
+            class="prose prose-md max-w-none"
+            set:html={body ? portableTextToHtml(body) : ""}
+          />
+
+          {
+            /* Navigation removed: previousNote/nextNote logic is not available with Sanity fetch. */
+          }
+
+          <div class="mt-12 pt-8">
+            <a href="/articles" class="text-default hover:underline"
+              >← Back to Articles</a
+            >
+          </div>
+        </main>
+      </div>
+    </main>
+
+    <style>
+      .prose {
+        color: inherit;
+      }
+
+      .prose h1 {
+        margin-bottom: 1rem;
+      }
+      <body class="dark bg-gray-950 text-gray-100" > <style > .prose h2 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .prose h3 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+
+      .prose p {
+        margin-bottom: 1rem;
+        line-height: 1.7;
+      }
+
+      .prose ul,
+      .prose ol {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+      }
+
+      .prose li {
+        margin-bottom: 0.5rem;
+      }
+
+      .prose a {
+        color: #2563eb;
+        text-decoration: underline;
+      }
+
+      .prose a:hover {
+        color: #1d4ed8;
+      }
+
+      .prose code {
+        background-color: #f3f4f6;
+        padding: 0.125rem 0.25rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+      }
+
+      .prose blockquote {
+        border-left: 4px solid #e5e7eb;
+        padding-left: 1rem;
+        margin: 1.5rem 0;
+        font-style: italic;
+        color: #6b7280;
+      }
+    </style>
+  </body>
+</html>

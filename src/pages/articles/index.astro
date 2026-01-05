@@ -1,0 +1,97 @@
+---
+export const prerender = true;
+
+import Header from "../../components/header/index.astro";
+import "../../style/index.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Articles | Adetoye Anointing</title>
+    <link rel="stylesheet" href="/src/style/index.css" />
+  </head>
+  <body>
+    <Header title="Articles" />
+    <main
+      class="max-w-4xl mx-auto px-4 py-8 min-h-[60vh] flex flex-col justify-center"
+    >
+      <header class="mb-16 text-center">
+        <h1 class="text-2xl font-bold mb-4 italic text-default">
+          Choose Your Path
+        </h1>
+        <p class="text-md italic opacity-80 max-w-lg mx-auto leading-relaxed">
+          Whether you're here to geek out over systems or explore my personal
+          reflections on history and life, pick a side to begin.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20 px-4">
+        <!-- Technical Option -->
+        <a
+          href="/articles/technical"
+          class="group relative overflow-hidden border border-gray-800 p-8 rounded-lg hover:border-default transition-all duration-300"
+        >
+          <div class="relative z-10">
+            <h2
+              class="text-xl font-bold mb-3 italic group-hover:text-default transition-colors"
+            >
+              Technical Articles
+            </h2>
+            <p
+              class="text-sm italic opacity-70 group-hover:opacity-100 transition-opacity leading-relaxed"
+            >
+              Diving deep into code, backend architecture, blockchain protocols,
+              and systems engineering.
+            </p>
+            <div
+              class="mt-6 text-default text-xs font-bold tracking-widest uppercase flex items-center gap-2"
+            >
+              Explore Tech <span
+                class="group-hover:translate-x-1 transition-transform">→</span
+              >
+            </div>
+          </div>
+        </a>
+
+        <!-- Non-Technical Option -->
+        <a
+          href="/articles/non-technical"
+          class="group relative overflow-hidden border border-gray-800 p-8 rounded-lg hover:border-default transition-all duration-300"
+        >
+          <div class="relative z-10">
+            <h2
+              class="text-xl font-bold mb-3 italic group-hover:text-default transition-colors"
+            >
+              Non-Technical Thoughts
+            </h2>
+            <p
+              class="text-sm italic opacity-70 group-hover:opacity-100 transition-opacity leading-relaxed"
+            >
+              Reflections on history, photography, and personal growth. The more
+              "human" side of my journey.
+            </p>
+            <div
+              class="mt-6 text-default text-xs font-bold tracking-widest uppercase flex items-center gap-2"
+            >
+              Explore Life <span
+                class="group-hover:translate-x-1 transition-transform">→</span
+              >
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <footer
+        class="mt-20 pt-8 text-center text-sm border-t border-gray-800/30"
+      >
+        <p class="text-gray-500 italic">
+          "The best way to predict the future is to create it." — Thanks for
+          exploring my digital garden.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

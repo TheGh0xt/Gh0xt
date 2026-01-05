@@ -1,123 +1,139 @@
 ---
-import Header from '../../components/header/index.astro'
-import '../../style/index.css'
+import Header from "../../components/header/index.astro";
+import "../../style/index.css";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Source Contributions</title>
-</head>
-<body>
-    <Header title="Open Source Contributions" />
-    <main class="container mx-auto px-4 py-8 max-w-4xl  italic">
-	
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Open Source Contributions</title>
+	</head>
+	<body>
+		<Header title="Open Source Contributions" />
+		<main class="container mx-auto px-4 py-8 max-w-4xl italic">
+			<section class="mb-12">
+				<h2 class="text-md font-semibold mb-4 text-default">
+					Overview
+				</h2>
+				<p class="leading-relaxed text-sm opacity-90">
+					Open-source contribution is where my passion for systems and
+					software engineering meets real-world impact. I focus on
+					building resilient infrastructure and ensuring software
+					reliability through rigorous testing and optimization.
+				</p>
+			</section>
 
-		<section class="mb-12">
-			<h2 class="text-md font-semibold mb-4">Overview</h2>
-			<p class="leading-relaxed text-sm">
-				Contributing to open source has been a significant part of my development journey. 
-				Here's a collection of some of my contributions across various projects, from bug fixes to feature implementations.
-			</p>
-		</section>
+			<section class="mb-12">
+				<h2 class="text-lg font-semibold mb-8">Key Contributions</h2>
 
-		<section class="mb-12">
-			<h2 class="text-lg font-semibold mb-6">Recent Contributions</h2>
-			
-			<div class="space-y-8">
-				<div class="text-default">
-					<h3 class="text-md italic font-medium mb-3 text-default">OFFER-HUB</h3>
-					<p class="mb-4 italic text-sm">A platform for job offers and opportunities</p>
-					<ul class="space-y-2 text-sm">
-						<li><a href="https://github.com/OFFER-HUB/offer-hub/pull/698" class="text-blue-600 hover:underline" target="_blank">Pull Request #698</a> - Added a specialized freelancer-search hook with advanced filters, caching, and performance optimizations</li>
-						<li><a href="https://github.com/OFFER-HUB/offer-hub/pull/705" class="text-blue-600 hover:underline" target="_blank">Pull Request #705</a> - Build POST /auth/verify to validate credentials via @simplewebauthn/server against SQLite, return status, add mocked tests, and ensure linting/CI</li>
-						<li><a href="https://github.com/OFFER-HUB/offer-hub/pull/708" class="text-blue-600 hover:underline" target="_blank">Pull Request #708</a> - Implemented loading states for chart components using custom skeleton components</li>
-						<li><a href="https://github.com/OFFER-HUB/offer-hub/pull/828" class="text-blue-600 hover:underline" target="_blank">Pull Request #828</a> - Implements comprehensive backend application management system with REST API endpoints, validation middleware, authorization, business logic services, and utility helpers</li>
-						<li><a href="https://github.com/OFFER-HUB/offer-hub/pull/277" class="text-blue-600 hover:underline" target="_blank">Pull Request #277</a> - This PR adds the Applications module, enabling freelancers to apply for projects and clients to manage applications, with complete API, logic, and validation</li>
-						<li><a href="https://github.com/OFFER-HUB/offer-hub/pull/376" class="text-blue-600 hover:underline" target="_blank">Pull Request #376</a> - This PR connects the messaging UI to the real API, replacing mock data and adding key features</li>
-					</ul>
-				</div>
-
-				<div class="text-default">
-					<h3 class="text-md italic font-medium mb-3 text-default">Harmonia Development</h3>
-					<p class="mb-4 italic">Decentralized application development</p>
-					<ul class="space-y-2 text-sm">
-						<li><a href="https://github.com/Harmonia-Development/harmonia-dapp/pull/158" class="text-blue-600 hover:underline" target="_blank">Pull Request #158</a> - Wallet verification was migrated from ethers.js (EVM) to Stellar SDK, with updated validation and security</li>
-					</ul>
-				</div>
-
-				<div class="text-default">
-					<h3 class="text-md italic font-medium mb-3 text-default">Galaxy-KJ Wallet</h3>
-					<p class="mb-4 italic">Cryptocurrency wallet development</p>
-					<ul class="space-y-2 text-sm">
-						<li><a href="https://github.com/Galaxy-KJ/GalaxyKJ-wallet/pull/162" class="text-blue-600 hover:underline" target="_blank">Pull Request #162</a> - This PR adds proper TypeScript types for API responses to improve type safety and maintainability when handling cryptocurrency price data</li>
-						<li><a href="https://github.com/Galaxy-KJ/GalaxyKJ-wallet/pull/168" class="text-blue-600 hover:underline" target="_blank">Pull Request #168</a> - Added comprehensive TypeScript interfaces for wallet balance data to improve type safety, fix autocomplete issues, and enhance code maintainability</li>
-						<li><a href="https://github.com/Galaxy-KJ/GalaxyKJ-wallet/pull/176" class="text-blue-600 hover:underline" target="_blank">Pull Request #176</a> - Comprehensive cache problems resolution with validation system, diagnostics dashboard, and automated cache management</li>
-					</ul>
-				</div>
-
-				<div class="text-default">
-					<h3 class="text-md italic font-medium mb-3 text-default">Soroban Versioning</h3>
-					<p class="mb-4 italic">Smart contract versioning tools</p>
-					<ul class="space-y-2 text-sm">
-						<li><a href="https://github.com/tupui/soroban-versioning/pull/224" class="text-blue-600 hover:underline" target="_blank">Pull Request #224</a> - This PR implements transfer_funds in payments.rs using Soroban payment primitives for XLM and USDC with validation, balance checks, and authorization</li>
-					</ul>
-				</div>
-
-				<div class="text-default">
-					<h3 class="text-md italic font-medium mb-3 text-default">AURORALA Organization</h3>
-					<p class="mb-4 italic">Backend development projects</p>
-					<ul class="space-y-2 text-sm">
-						<li><a href="https://github.com/AURORALAOrg/aurora-backend/pull/63" class="text-blue-600 hover:underline" target="_blank">Pull Request #63</a> - This PR implements a secure biometric authentication endpoint using WebAuthn for the Stellar wallet service</li>
-					</ul>
-				</div>
-
-				<div class="">
-					<h3 class="text-md italic font-medium mb-3 text-default">Other Notable Contributions</h3>
-					<div class="grid md:grid-cols-1 gap-4">
-						<div>
-							<h4 class="font-medium mb-2">SkillCert</h4>
-							<ul class="space-y-1 text-sm">
-								<li><a href="https://github.com/SkillCert/skillcert_contracts/pull/31" class="text-blue-600 hover:underline" target="_blank">Pull Request #31</a> - Create a hello_world() smart contract function to be consumed by skillcert frontend implementation</li>
-							</ul>
-						</div>
-						<div>
-							<h4 class="font-medium mb-2">QualiNova</h4>
-							<ul class="space-y-1 text-sm">
-								<li><a href="https://github.com/QualiNova/qualinova-dev/pull/100" class="text-blue-600 hover:underline" target="_blank">Pull Request #100</a> - This PR introduces a robust coupon validation service to ensure secure and efficient coupon redemption</li>
-							</ul>
-						</div>
-						<div>
-							<h4 class="font-medium mb-2">QuickLendX Protocol</h4>
-							<ul class="space-y-1 text-sm">
-								<li><a href="https://github.com/QuickLendX/quicklendx-protocol/pull/95" class="text-blue-600 hover:underline" target="_blank">Pull Request #95</a> - NB: Adds SEP-53 compliant Git identity linking during registration. Supports GitHub/GitLab with Ed25519 signature verification</li>
-							</ul>
-						</div>
-						<div>
-							<h4 class="font-medium mb-2">AquaStark</h4>
-							<ul class="space-y-1 text-sm">
-								<li><a href="https://github.com/AquaStark/Aqua-Stark/pull/226" class="text-blue-600 hover:underline" target="_blank">Pull Request #226</a> - Added a new fish hover popup UI that displays energy, hunger, and happiness stats with icons for better clarity</li>
-							</ul>
-						</div>
-						<div>
-							<h4 class="font-medium mb-2">Trustless Work</h4>
-							<ul class="space-y-1 text-sm">
-								<li><a href="https://github.com/Trustless-Work/escrow-viewer/pull/21" class="text-blue-600 hover:underline" target="_blank">Pull Request #21</a> - This PR updates the Escrow Viewer so that it correctly displays the escrow contract's balance and trustline status</li>
-							</ul>
-						</div>
-						<div>
-							<h4 class="font-medium mb-2">TreeByte Backend</h4>
-							<ul class="space-y-1 text-sm">
-								<li><a href="https://github.com/Tree-Byte-org/TreeByte-Backend/pull/82" class="text-blue-600 hover:underline" target="_blank">Pull Request #82</a> - Implemented a reusable confirmation dialog for destructive actions, with configurable titles, descriptions, and button labels</li>
+				<div class="space-y-12">
+					<!-- Librsvg -->
+					<div class="">
+						<h3 class="text-md italic font-bold mb-2 text-default">
+							Librsvg
+						</h3>
+						<p class="mb-4 italic text-sm opacity-80">
+							A high-performance library used by GNOME and other
+							platforms to render SVG files into bitmapped images.
+						</p>
+						<div class="text-sm leading-relaxed">
+							<a
+								href="https://gitlab.gnome.org/GNOME/librsvg/-/merge_requests/?sort=created_date&state=merged&author_username=Yorubad-Dev&first_page_size=20"
+								class="text-default underline hover:opacity-80 font-bold"
+								target="_blank">View Contributions</a
+							> — As an active contributor (formerly via Outreachy),
+							I focused on <b>optimizations</b> and implementing the
+							<b>SVG2 text layout algorithm</b>. My work included:
+							<ul
+								class="list-disc list-inside mt-2 space-y-1 opacity-90"
+							>
+								<li>
+									Text gathering and precise white-space
+									handling.
+								</li>
+								<li>
+									Implementing the core algorithm based on
+									individual glyph positions.
+								</li>
+								<li>
+									Supporting bidirectional embedding and
+									vertical text layouts.
+								</li>
 							</ul>
 						</div>
 					</div>
-				</div>
-			</div>
-		</section>
 
-	</main>
-</body>
+					<!-- Kubernetes CPO -->
+					<div class="">
+						<h3 class="text-md italic font-bold mb-2 text-default">
+							Kubernetes Cloud Provider OpenStack
+						</h3>
+						<p class="mb-4 italic text-sm opacity-80">
+							A project that allows Kubernetes to utilize
+							OpenStack clouds as a provider, managing resources
+							like LoadBalancers and storage.
+						</p>
+						<p class="text-sm leading-relaxed">
+							<a
+								href="https://github.com/kubernetes/cloud-provider-openstack/pulls?q=is:pr+is:closed+author:TheGh0xt"
+								class="text-default underline hover:opacity-80 font-bold"
+								target="_blank">View Contributions</a
+							> — I focused on enhancing the project's reliability by
+							writing <b>extensive edge-case tests</b> and managing
+							codebase stability through tagging for <b>OCCM</b>,
+							ensuring robust OpenStack integration in production
+							environments.
+						</p>
+					</div>
+
+					<!-- Honorable Mention -->
+					<div class="pt-6 border-t border-gray-800">
+						<h4
+							class="text-sm font-bold mb-2 flex items-center gap-2"
+						>
+							<span class="text-default">🏅</span> Honorable Mention
+						</h4>
+						<p class="text-sm italic opacity-80">
+							Received a formal mention in the <a
+								href="https://gitlab.gnome.org/GNOME/librsvg/-/releases/2.59.2"
+								class="text-default underline"
+								target="_blank">Librsvg 2.59.2 release</a
+							> for contributions to the project's evolution.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="mb-12">
+				<h2 class="text-md font-semibold mb-6 opacity-60">
+					Other Contributions
+				</h2>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+					<div class="">
+						<h4 class="text-sm font-bold mb-2">
+							Namecoin pkcs11mod
+						</h4>
+						<p class="text-xs italic opacity-70 mb-2">
+							A PKCS#11 module for Namecoin, enhancing security
+							and hardware integration.
+						</p>
+						<a
+							href="https://github.com/namecoin/pkcs11mod/pulls?q=is:pr+is:closed+author:TheGh0xt"
+							class="text-xs text-default underline">View PRs</a
+						>
+					</div>
+				</div>
+			</section>
+		</main>
+		<footer
+			class="mt-20 pb-20 text-center text-sm border-t border-gray-800/30 pt-8"
+		>
+			<p class="text-gray-500 italic">
+				"Turning complex problems into elegant code, one commit at a
+				time."
+			</p>
+		</footer>
+	</body>
 </html>

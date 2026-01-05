@@ -1,23 +1,28 @@
-I’m a software engineer passionate about Linux, open-source ecosystems, and systems engineering. I build software ranging from developer tools to real-world applications and enjoy exploring systems that run close to the metal.
+I’m a software engineer driven by a fascination with how systems work "under the hood." For most of my career, I’ve focused on building secure, resilient backend services. However, my deep roots in the open-source community have given me the unique opportunity to contribute to large-scale, universally used software beyond traditional backend roles. I am a firm believer in the power of open-source collaboration and community-driven development.
 
 <br/>
 
-I have solid experience with Linux and its various distributions, including Ubuntu, Kali Linux, Tails OS, Parrot OS, and Kubuntu. A few years ago, I experimented with running a Bitcoin node and personal server on a Raspberry Pi 4, but it didn’t go as planned due to hardware limitations, something I’d love to revisit in the future with better hardware.
+My technical foundation is built on solid experience with Linux and its vast ecosystem. In the past, I spent significant time experimenting with various distributions—often on my primary machine. While "distro-hopping" on my daily driver led to a few "burnt" systems and hard lessons, it was an invaluable experience that taught me how to troubleshoot, recover, and truly understand the OS layer.
 
 <br/>
 
-I was a Solana Summer Fellow '24 and continue to work on decentralized applications and blockchain systems.
+Opensource and community leadership has also been a core part of my journey. I served as the Lead for the **Google Developer Student Club (now GDG on Campus)** at my university from 2022 to 2023, where I was responsible for organizing technical events and managing our member base. 
+
+Later, I was selected as an Outreachy intern for the **GNOME Foundation (2024–2025)**. During the internship, I worked on <a class='text-default font-semibold' href="https://gitlab.gnome.org/GNOME/librsvg">Librsvg</a> a project I remain an active contributor to while also engaging with the community's infrastructure engineering.
 
 <br/>
 
-Recent projects include the <a class='text-default font-semibold' href="https://docs.useplunk.com/guides/rust-sdk">Plunk Rust SDK</a>, now the official community SDK, and an unofficial SDK for <a class='text-default font-semibold' href="https://polar.sh/">Polar.sh</a>.
+Currently, I am diving deep into the world of **Blockchain Engineering**. I’m fascinated by the intersection of low-level architecture and decentralized technology at the protocol level. This involves mastering distributed systems, consensus algorithms, and smart contract development—skills that are not only challenging but highly transferable across the engineering landscape.
 
 <br/>
 
-Currently, I'm building <a class="text-default font-semibold" href="https://www.ourpocket.xyz/">OurPocket</a> - an infrastructure API that enables B2B platforms to manage wallets across multiple payment and crypto providers through a single, secure integration.
+When I am not geeking as an engineer, I am often out practicing **photography** 📸, lost in a good book 📚, or deep-researching historical events and I have quite the perspective on history and current related events that I find interesting and might find myself sharing on my <a class='text-default font-semibold' href="/articles/non-technical">non-technical</a> posts.
 
 <br/>
 
-Outside of development, I play drums and enjoy diving into technical reads. Over time, I’ve curated an awesome reading list from some amazing corners of the web, think of it as a gold mine of knowledge you can explore <a class="text-default font-semibold underline" href="https://sudowhoami.notion.site/Some-Good-Reads-in-no-particular-order-25a13d4f6e9a80c88637e0b72955c0d8?pvs=74"> here </a>
-. I’ve also got a few titles lined up on my personal reading list, including Mastering Bitcoin, <a  href="https://en.wikipedia.org/wiki/The_Garden_of_Forking_Paths"> The Garden of Forking Paths  </a> , <a href="https://en.wikipedia.org/wiki/Many-worlds_interpretation" class="text-default">Many worlds interpretation</a>, <a class="text-default" href="https://craftinginterpreters.com/">Crafting Interpreters</a>, and <a class="text-default" href="https://archive.org/details/cu31924028741175"> The Dual Mandate in British Tropical Africa (1922) by Lord Frederick Lugard </a>.
+I’ll leave you with one of my favorite lyrics from the song <a class='text-default font-semibold' href="https://youtu.be/oh0vj_eKHeE?si=KFKCMRM13zdZ3qr6">Survivor's guilt</a> by Dave
+
+<br/>
+
+**"when you feel like givin' up, know you're close"**.
 

@@ -1,47 +1,50 @@
 ---
-  import Nav from './nav.astro'
+import Nav from "./nav.astro";
 
-  const personal_urls = [
-    {
-      title: 'Github',
-      url: 'https://github.com/yhoungdev'
-    },
-    {
-      title: 'LinkedIn',
-      url: 'https://www.linkedin.com/in/emmanuel-obiabo'
-    },
-    {
-      title: 'X (Formerly Twitter)',
-      url: 'https://x.com/obiabo_immanuel'
-    },
-
-
-
-  ]
-
+const personal_urls = [
+  {
+    title: "Github",
+    url: "https://github.com/TheGh0xt",
+  },
+  {
+    title: "LinkedIn",
+    url: "https://linkedin.com/in/adetoye-anointing",
+  },
+  {
+    title: "X (Formerly Twitter)",
+    url: "https://x.com/TheGhoxt",
+  },
+  {
+    title: "Resume",
+    url: "https://docs.google.com/document/d/1iMwjotA1Pp9Hi6a3COwpDdd1F2kA5VKS76jIWN-l6w4/edit?usp=sharing",
+  },
+];
 ---
 
 <div>
-
-  <Nav/>
+  <Nav />
 
   <header class="text-center mb-12 mt-12">
     <img
-      src="https://avatars.githubusercontent.com/u/54102389?v=4"
+      src="https://github.com/TheGh0xt.png"
       alt="Profile picture"
       width="80"
       height="80"
       class="rounded-lg mx-auto mb-4"
     />
 
-
-    <h1 class="text-3xl font-bold mb-2">Emmanuel Obiabo</h1>
+    <h1 class="text-3xl font-bold mb-2">Adetoye Anointing</h1>
 
     <div class="flex items-center flex-wrap gap-2 justify-center">
       {
-        personal_urls.map ( items => (
-          <a class="text-default text-xs underline"
-             href={items.url} target="_blank">{items.title}</a>
+        personal_urls.map((items) => (
+          <a
+            class="text-default text-xs underline"
+            href={items.url}
+            target="_blank"
+          >
+            {items.title}
+          </a>
         ))
       }
     </div>
