@@ -1,29 +1,19 @@
 ---
-export const prerender = false;
-
 import Header from "../../components/header/index.astro";
 import "../../style/index.css";
+import { getSanityPosts } from "../../utils/getSanityPosts";
 import { getSanityPostBySlug } from "../../utils/getSanityPostBySlug";
 import { portableTextToHtml } from "../../utils/portableTextToHtml";
 
-const { slug } = Astro.params;
-
-if (!slug) {
-  return new Response(null, {
-    status: 404,
-    statusText: "Not Found",
-  });
+export async function getStaticPaths() {
+  const posts = await getSanityPosts();
+  return posts.map((post: any) => ({
+    params: { slug: post.slug.current },
+    props: { post },
+  }));
 }
 
-const post = await getSanityPostBySlug(slug);
-
-if (!post) {
-  return new Response(null, {
-    status: 404,
-    statusText: "Note not found",
-  });
-}
-
+const { post } = Astro.props;
 const { title, description: desc, tags, publishedAt, body } = post;
 ---
 
@@ -80,7 +70,8 @@ const { title, description: desc, tags, publishedAt, body } = post;
                       dateStyle: "long",
                     })
                   : "Unknown"
-              }</b>
+              }</b
+            >
           </p>
           <article
             class="prose prose-md max-w-none"

@@ -6,23 +6,18 @@ import tailwind from "@astrojs/tailwind";
 import react from "@astrojs/react";
 
 import mdx from "@astrojs/mdx";
-import vercel from "@astrojs/vercel/serverless";
 
 
 import sanity from "@sanity/astro";
 
 export default defineConfig({
-  output: 'server',
+  site: 'https://TheGh0xt.github.io',
+  base: '/',
+  output: 'static',
   integrations: [tailwind(), react(), mdx(), sanity({
     projectId: 'kciy3tvs',
     dataset: 'production',
-   
+
     useCdn: false,
   })],
-
-  adapter: vercel({
-    webAnalytics: {
-      enabled: true,
-    },
-  }),
 });
