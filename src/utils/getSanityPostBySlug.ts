@@ -8,7 +8,24 @@ export async function getSanityPostBySlug(slug: string) {
     publishedAt,
     slug,
     tags,
-    body
+    markdown,
+    mainImage {
+      asset -> {
+        url
+      },
+      alt,
+      caption
+    },
+    body[] {
+      ...,
+      _type == "image" => {
+        asset -> {
+          url
+        },
+        alt,
+        caption
+      }
+    }
   }`;
   return await sanity.fetch(query, { slug });
 }

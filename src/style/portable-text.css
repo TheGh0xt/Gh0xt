@@ -1,0 +1,367 @@
+/* Portable Text Renderer - Premium Design System Integration */
+
+.portable-text {
+    font-family: inherit;
+    color: #c8ccda;
+    line-height: 1.8;
+}
+
+/* ============ TEXT FORMATTING ============ */
+
+strong {
+    font-weight: 700;
+    color: #fff;
+}
+
+em {
+    font-style: italic;
+    opacity: 0.9;
+}
+
+code {
+    background-color: rgba(255, 255, 255, 0.08);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-family: "IBM Plex Mono", monospace !important;
+    font-size: 0.9em;
+    color: oklch(75.5% 0.15 250);
+    /* Subtle blue for inline code */
+}
+
+u {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+s {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* ============ HEADINGS ============ */
+
+.portable-text h1,
+.portable-h1 {
+    font-size: 2.8em;
+    font-weight: 700;
+    margin: 1.5em 0 0.8em 0;
+    line-height: 1.1;
+    color: #fff;
+}
+
+.portable-text h2,
+.portable-h2 {
+    font-size: 1.8em;
+    font-weight: 600;
+    margin: 1.8em 0 0.8em 0;
+    line-height: 1.2;
+    color: #e8e8e8;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 0.3em;
+}
+
+.portable-text h3,
+.portable-h3 {
+    font-size: 1.4em;
+    font-weight: 600;
+    margin: 1.5em 0 0.6em 0;
+    line-height: 1.3;
+    color: #d9d9d9;
+}
+
+.portable-text h4,
+.portable-h4 {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 1.25em 0 0.5em 0;
+    line-height: 1.4;
+    color: #c8ccda;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ============ PARAGRAPHS ============ */
+
+.portable-text p,
+.portable-p {
+    margin: 1em 0;
+}
+
+/* ============ LISTS ============ */
+
+.portable-text ul,
+.portable-ul {
+    list-style: none;
+    margin: 1.5em 0;
+    padding-left: 1.5em;
+}
+
+.portable-text ul li,
+.portable-li-bullet {
+    position: relative;
+    margin: 0.6em 0;
+}
+
+.portable-text ol,
+.portable-ol {
+    list-style: decimal;
+    margin: 1.5em 0;
+    padding-left: 2.5em;
+}
+
+ol li {
+    margin: 0.6em 0;
+}
+
+/* ============ BLOCKQUOTES ============ */
+
+.portable-text blockquote,
+.portable-blockquote {
+    margin: 2em 0;
+    padding: 1.5em 2em;
+    border-left: 2px solid oklch(57.7% 0.245 27.325);
+    font-style: italic;
+    color: #a0a5b8;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 0 8px 8px 0;
+}
+
+.quote-author {
+    margin-top: 1em;
+    font-style: normal;
+    color: #888;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* ============ CODE BLOCKS ============ */
+
+.portable-text pre {
+    margin: 2em 0;
+    padding: 1.5em;
+    border-radius: 8px;
+    background-color: #0d0d0d;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-x: auto;
+    position: relative;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+    color: #a9b1d6;
+    font-size: 0.9em;
+    line-height: 1.6;
+    font-family: "IBM Plex Mono", monospace !important;
+}
+
+/* ============ IMAGES ============ */
+
+.portable-text figure {
+    margin: 2.5em 0;
+}
+
+figure img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+figcaption {
+    margin-top: 1em;
+    font-size: 0.85em;
+    color: #666;
+    text-align: center;
+    font-style: italic;
+}
+
+/* ============ CALLOUTS ============ */
+
+.callout {
+    margin: 2em 0;
+    padding: 1.5em;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.callout-title {
+    font-weight: 700;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.callout-info {
+    background: rgba(100, 181, 246, 0.05);
+    border-color: rgba(100, 181, 246, 0.2);
+    color: #90caf9;
+}
+
+.callout-warning {
+    background: rgba(255, 183, 77, 0.05);
+    border-color: rgba(255, 183, 77, 0.2);
+    color: #ffb74d;
+}
+
+.callout-error {
+    background: rgba(244, 67, 54, 0.05);
+    border-color: rgba(244, 67, 54, 0.2);
+    color: #ef5350;
+}
+
+.callout-success {
+    background: rgba(129, 199, 132, 0.05);
+    border-color: rgba(129, 199, 132, 0.2);
+    color: #81c784;
+}
+
+/* ============ DIVIDERS ============ */
+
+.portable-text hr,
+.portable-divider {
+    margin: 4em 0;
+    border: none;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.15);
+    display: block;
+}
+
+/* ============ VIDEO EMBEDS ============ */
+
+.video-container {
+    margin: 2.5em 0;
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 */
+    height: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* ============ HIGHLIGHTS ============ */
+
+mark {
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+    font-weight: 600;
+    color: #000;
+}
+
+.highlight-yellow {
+    background-color: #ffd54f;
+}
+
+.highlight-green {
+    background-color: #81c784;
+}
+
+.highlight-blue {
+    background-color: #64b5f6;
+}
+
+.highlight-red {
+    background-color: #ef5350;
+}
+
+/* ============ PREVIEW BLOCKS ============ */
+
+.preview-block {
+    margin: 2.5em 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.preview-header {
+    padding: 1em 1.5em;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.preview-title {
+    font-weight: 700;
+    font-size: 0.95em;
+    color: #fff;
+}
+
+.preview-description {
+    font-size: 0.85em;
+    color: #888;
+    margin-top: 0.3em;
+}
+
+.preview-content {
+    padding: 1.5em;
+}
+
+.preview-light {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.preview-dark {
+    background-color: #1a1a1a;
+    color: #eee;
+}
+
+.preview-code {
+    background-color: #0d0d0d;
+    color: #a9b1d6;
+}
+
+/* ============ LINKS ============ */
+
+a,
+.portable-link {
+    color: oklch(57.7% 0.245 27.325);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+    transition: all 0.2s ease;
+}
+
+a:hover {
+    opacity: 0.8;
+    text-decoration-thickness: 2px;
+}
+
+.internal-link {
+    border-bottom: 1px dashed oklch(57.7% 0.245 27.325);
+    text-decoration: none;
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    h3 {
+        font-size: 1.2em;
+    }
+
+    .portable-text {
+        font-size: 0.95em;
+    }
+}

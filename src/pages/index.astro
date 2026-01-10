@@ -1,12 +1,11 @@
 ---
-import Header from '../components/header/index.astro'
-import Project from '../components/project.astro'
-import About from '../components/sections/about.astro'
-import '../../src/style/index.css'
-
+import Header from "../components/header/index.astro";
+import Project from "../components/project.astro";
+import About from "../components/sections/about.astro";
+import "../../src/style/index.css";
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -14,28 +13,23 @@ import '../../src/style/index.css'
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
 
-    
     <title>Adetoye Anointing</title>
-    
-    <script async is:inline src="https://www.googletagmanager.com/gtag/js?id=G-GSQTWFBD18"></script>
+
+    <script
+      async
+      is:inline
+      src="https://www.googletagmanager.com/gtag/js?id=G-GSQTWFBD18"></script>
     <script is:inline>
-      import { initializeAnalytics } from '../utils/analytics';
+      import { initializeAnalytics } from "../utils/analytics";
       initializeAnalytics();
     </script>
-
-
   </head>
   <body>
-   
-	<Header/>
-    <div class="max-w-2xl mx-auto px-4 py-8 font-serif">
-     
+    <Header />
+    <div class="max-w-2xl mx-auto px-4 py-8">
+      <About more={true} />
 
-     <About more={true}/>
-
-     
-
-      <Project/>
+      <Project />
     </div>
   </body>
 </html>

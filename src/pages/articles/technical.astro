@@ -28,7 +28,7 @@ const technicalPosts = posts.filter((post: any) =>
             </div>
 
             <header class="mb-12">
-                <h1 class="text-xl font-bold mb-4 text-default italic">
+                <h1 class="text-xl font-bold mb-4 text-default">
                     Technical Articles
                 </h1>
                 <p class="text-sm italic opacity-80">
@@ -40,32 +40,61 @@ const technicalPosts = posts.filter((post: any) =>
             <section class="mb-12">
                 {
                     technicalPosts.length > 0 ? (
-                        <div class="space-y-12">
+                        <div class="space-y-16">
                             {technicalPosts.map((post: any) => (
-                                <div class="">
-                                    <h3 class="text-lg italic font-bold mb-2">
-                                        <a
-                                            href={`/articles/${post.slug.current}`}
-                                            class="text-default hover:underline"
-                                        >
-                                            {post.title}
-                                        </a>
-                                    </h3>
-                                    {post.description && (
-                                        <p class="mb-3 text-sm italic opacity-80">
-                                            {post.description}
-                                        </p>
+                                <div class="group grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
+                                    {post.mainImage?.asset?.url && (
+                                        <div class="md:col-span-1 overflow-hidden rounded-lg border border-white/5 group-hover:border-default transition-colors">
+                                            <a
+                                                href={`/articles/${post.slug.current}`}
+                                            >
+                                                <img
+                                                    src={
+                                                        post.mainImage.asset.url
+                                                    }
+                                                    alt={
+                                                        post.mainImage.alt ||
+                                                        post.title
+                                                    }
+                                                    class="w-full h-32 md:h-24 object-cover group-hover:scale-105 transition-transform duration-500"
+                                                />
+                                            </a>
+                                        </div>
                                     )}
-                                    <p class="text-xs italic opacity-60">
-                                        Published on{" "}
-                                        {post.publishedAt
-                                            ? new Date(
-                                                  post.publishedAt,
-                                              ).toLocaleDateString("en-US", {
-                                                  dateStyle: "long",
-                                              })
-                                            : "Unknown"}
-                                    </p>
+                                    <div
+                                        class={
+                                            post.mainImage?.asset?.url
+                                                ? "md:col-span-3"
+                                                : "md:col-span-4"
+                                        }
+                                    >
+                                        <h3 class="text-lg font-bold mb-2">
+                                            <a
+                                                href={`/articles/${post.slug.current}`}
+                                                class="text-default hover:underline"
+                                            >
+                                                {post.title}
+                                            </a>
+                                        </h3>
+                                        {post.description && (
+                                            <p class="mb-3 text-sm italic opacity-80 line-clamp-2">
+                                                {post.description}
+                                            </p>
+                                        )}
+                                        <p class="text-xs italic opacity-60">
+                                            Published on{" "}
+                                            {post.publishedAt
+                                                ? new Date(
+                                                      post.publishedAt,
+                                                  ).toLocaleDateString(
+                                                      "en-US",
+                                                      {
+                                                          dateStyle: "long",
+                                                      },
+                                                  )
+                                                : "Unknown"}
+                                        </p>
+                                    </div>
                                 </div>
                             ))}
                         </div>

@@ -24,7 +24,17 @@ if (!post) {
   });
 }
 
-const { title, description: desc, tags, publishedAt, body } = post;
+const {
+  title,
+  description: desc,
+  tags,
+  publishedAt,
+  body,
+  markdown,
+  mainImage,
+} = post;
+
+import { renderMarkdown } from "../../utils/markdownRenderer";
 ---
 
 <!doctype html>
@@ -42,6 +52,11 @@ const { title, description: desc, tags, publishedAt, body } = post;
       property="og:description"
       content={desc || "Personal articles and thoughts"}
     />
+    {
+      mainImage?.asset?.url && (
+        <meta property="og:image" content={mainImage.asset.url} />
+      )
+    }
     <meta property="og:type" content="article" />
     <meta
       property="article:published_time"
@@ -53,41 +68,67 @@ const { title, description: desc, tags, publishedAt, body } = post;
         <meta property="article:tag" content={tag} />
       ))
     }
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta
       name="twitter:description"
       content={desc || "Personal articles and thoughts"}
     />
     <title>{title} | Articles</title>
-    <link rel="stylesheet" href="/src/style/index.css" />
   </head>
   <body>
     <Header title={title} />
     <main class="container mx-auto px-4 py-8 max-w-4xl">
       <div class="w-fit max-w-full flex items-start gap-2 mt-6 mx-auto">
         <main class="container">
-          <h1
-            class="text-xl md:text-2xl italic font-bold leading-tight tracking-normal text-default"
-          >
-            {title}
-          </h1>
-          {desc && <p class="text-md mt-4 mb-6 italic">{desc}</p>}
-          <p class="mb-8 text-sm italic">
-            Published on <b
-              >{
-                publishedAt
-                  ? new Date(publishedAt).toLocaleDateString("en-US", {
-                      dateStyle: "long",
-                    })
-                  : "Unknown"
-              }</b
+          <div class="mb-8">
+            <h1
+              class="text-xl md:text-3xl font-bold leading-tight tracking-normal text-default"
             >
-          </p>
-          <article
-            class="prose prose-md max-w-none"
-            set:html={body ? portableTextToHtml(body) : ""}
-          />
+              {title}
+            </h1>
+            {desc && <p class="text-md mt-4 italic opacity-80">{desc}</p>}
+            <p class="mt-4 text-xs italic opacity-60">
+              Published on <b
+                >{
+                  publishedAt
+                    ? new Date(publishedAt).toLocaleDateString("en-US", {
+                        dateStyle: "long",
+                      })
+                    : "Unknown"
+                }</b
+              >
+            </p>
+          </div>
+
+          {
+            mainImage?.asset?.url && (
+              <figure class="mb-12">
+                <img
+                  src={mainImage.asset.url}
+                  alt={mainImage.alt || title}
+                  class="w-full h-auto rounded-xl border border-white/10 shadow-2xl"
+                />
+                {mainImage.caption && (
+                  <figcaption class="mt-4 text-center text-xs italic opacity-50">
+                    {mainImage.caption}
+                  </figcaption>
+                )}
+              </figure>
+            )
+          }
+
+          <article class="portable-text">
+            {
+              body && body.length > 0 ? (
+                <div set:html={portableTextToHtml(body)} />
+              ) : markdown ? (
+                <div set:html={renderMarkdown(markdown)} />
+              ) : (
+                <p class="italic opacity-50">No content available.</p>
+              )
+            }
+          </article>
 
           {
             /* Navigation removed: previousNote/nextNote logic is not available with Sanity fetch. */
@@ -105,62 +146,12 @@ const { title, description: desc, tags, publishedAt, body } = post;
     <style>
       .prose {
         color: inherit;
+        font-family: inherit;
       }
 
-      .prose h1 {
-        margin-bottom: 1rem;
-      }
-      <body class="dark bg-gray-950 text-gray-100" > <style > .prose h2 {
+      /* Base spacing for the article content */
+      article {
         margin-top: 2rem;
-        margin-bottom: 1rem;
-        font-size: 1.5rem;
-        font-weight: 600;
-      }
-
-      .prose h3 {
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-        font-size: 1.25rem;
-        font-weight: 600;
-      }
-
-      .prose p {
-        margin-bottom: 1rem;
-        line-height: 1.7;
-      }
-
-      .prose ul,
-      .prose ol {
-        margin-bottom: 1rem;
-        padding-left: 1.5rem;
-      }
-
-      .prose li {
-        margin-bottom: 0.5rem;
-      }
-
-      .prose a {
-        color: #2563eb;
-        text-decoration: underline;
-      }
-
-      .prose a:hover {
-        color: #1d4ed8;
-      }
-
-      .prose code {
-        background-color: #f3f4f6;
-        padding: 0.125rem 0.25rem;
-        border-radius: 0.25rem;
-        font-size: 0.875rem;
-      }
-
-      .prose blockquote {
-        border-left: 4px solid #e5e7eb;
-        padding-left: 1rem;
-        margin: 1.5rem 0;
-        font-style: italic;
-        color: #6b7280;
       }
     </style>
   </body>

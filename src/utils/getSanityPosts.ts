@@ -9,7 +9,23 @@ export async function getSanityPosts() {
     publishedAt,
     slug,
     tags,
-    body
+    mainImage {
+      asset -> {
+        url
+      },
+      alt,
+      caption
+    },
+    body[] {
+      ...,
+      _type == "image" => {
+        asset -> {
+          url
+        },
+        alt,
+        caption
+      }
+    }
   }`;
   return await sanity.fetch(query);
 }

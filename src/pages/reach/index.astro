@@ -19,7 +19,8 @@ const personal_urls = [
   {
     title: "Twitter",
     url: "https://x.com/TheGhoxt",
-    description: "🐦 Savoring the whirlwind of information, with all its ups and downs. reposting geeks posts",
+    description:
+      "🐦 Savoring the whirlwind of information, with all its ups and downs. reposting geeks posts",
   },
   {
     title: "Email",
@@ -30,7 +31,8 @@ const personal_urls = [
   {
     title: "Matrix",
     url: "https://matrix.to/room/@yorubad_dev:matrix.org",
-    description: "❄️ An opensource decentralized chat platform for my opensource contribution communication.",
+    description:
+      "❄️ An opensource decentralized chat platform for my opensource contribution communication.",
   },
 ];
 ---
@@ -44,7 +46,7 @@ const personal_urls = [
   <body>
     <Header />
 
-    <div class="max-w-2xl mx-auto px-4 py-8 font-serif">
+    <div class="max-w-2xl mx-auto px-4 py-8">
       <div>
         <p>
           <ReachNote />
@@ -52,11 +54,11 @@ const personal_urls = [
       </div>
 
       <section id="reach" class="mt-4">
-        <h4 class="my-4">📬 Find Me Online</h4>
+        <h4>📬 Find Me Online</h4>
         <ul>
           {
             personal_urls.map((item) => (
-              <li class="my-2">
+              <li>
                 <a
                   href={item.url}
                   target="_blank"
