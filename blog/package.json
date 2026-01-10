@@ -2,6 +2,9 @@
   "name": "thegh0xt-articles",
   "private": true,
   "version": "1.0.0",
+  "engines": {
+    "node": "20.x"
+  },
   "main": "package.json",
   "license": "UNLICENSED",
   "scripts": {
