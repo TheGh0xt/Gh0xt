@@ -1,7 +1,8 @@
 [
-    {
-    "name": "",
-    "description": "",
-    "url": ""
+  {
+    "name": "MergeOracle",
+    "description": "A fast CLI that analyzes GitHub issues/PRs, provide conversations summaries, suggests a fix and generates a quick response for you.",
+    "url": "https://github.com/TheGh0xt/MergeOracle",
+    "featured": true
   }
 ]
