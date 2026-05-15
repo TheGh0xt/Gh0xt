@@ -1,28 +1,43 @@
-I’m a software engineer driven by a fascination with how systems work "under the hood." For most of my career, I’ve focused on building secure, resilient backend services. However, my deep roots in the open-source community have given me the unique opportunity to contribute to large-scale, universally used software beyond traditional backend roles. I am a firm believer in the power of open-source collaboration and community-driven development.
+I’m a software engineer driven by curiosity for how systems work beneath the abstraction layers. My engineering journey started from backend development, but over time it evolved into something broader: distributed systems, infrastructure, systems-level engineering, and the growing intersection between AI agents and programmable systems.
 
 <br/>
 
-My technical foundation is built on solid experience with Linux and its vast ecosystem. In the past, I spent significant time experimenting with various distributions—often on my primary machine. While "distro-hopping" on my daily driver led to a few "burnt" systems and hard lessons, it was an invaluable experience that taught me how to troubleshoot, recover, and truly understand the OS layer.
+For most of my career, I’ve built secure, scalable backend services with Go, focusing heavily on architecture, reliability, and maintainability. But what pushed my growth furthest was open source. Contributing to large-scale projects exposed me to engineering problems far beyond traditional product development and taught me how critical infrastructure powering millions of users is designed, maintained, and evolved collaboratively.
 
 <br/>
 
-Opensource and community leadership has also been a core part of my journey. I served as the Lead for the **Google Developer Student Club (now GDG on Campus)** at my university from 2022 to 2023, where I was responsible for organizing technical events and managing our member base. 
-
-Later, I was selected as an Outreachy intern for the **GNOME Foundation (2024–2025)**. During the internship, I worked on <a class='text-default font-semibold' href="https://gitlab.gnome.org/GNOME/librsvg">Librsvg</a> a project I remain an active contributor to while also engaging with the community's infrastructure engineering.
+My technical foundation was heavily shaped by Linux and the open-source ecosystem. I spent years experimenting with distributions, breaking systems, recovering them, rebuilding environments, and understanding the operating system layer deeply enough to stop treating it like magic. Those experiences became my unofficial systems engineering training ground and fundamentally changed how I think about software.
 
 <br/>
 
-Currently, I am diving deep into the world of **Blockchain Engineering**. I’m fascinated by the intersection of low-level architecture and decentralized technology at the protocol level. This involves mastering distributed systems, consensus algorithms, and smart contract development—skills that are not only challenging but highly transferable across the engineering landscape.
+Open source and community leadership have remained a core part of my path. I served as the Lead for the **Google Developer Student Club (now GDG on Campus)** at my university from 2022 to 2023, organizing technical events and helping grow a local engineering community around collaborative learning and experimentation.
+
+Later, I was selected as an Outreachy intern for the **GNOME Foundation (2024–2025)**, where I contributed to <a class='text-default font-semibold' href="https://gitlab.gnome.org/GNOME/librsvg">Librsvg</a>. My work focused on implementing parts of the SVG2 text layout algorithm in Rust — work involving rendering systems, text shaping, bidi handling, and specification-driven engineering. I remain an active contributor while also engaging with infrastructure-related work across the ecosystem.
 
 <br/>
 
-When I am not geeking as an engineer, I am often out practicing **photography** 📸, lost in a good book 📚, or deep-researching historical events and I have quite the perspective on history and current related events that I find interesting and might find myself sharing on my <a class='text-default font-semibold' href="/articles/non-technical">non-technical</a> posts.
+Recently, my focus has shifted deeper into **protocol and systems engineering**. I’m particularly interested in blockchain infrastructure, distributed coordination systems, AI agent tooling, and compute/network layers that enable autonomous systems to operate reliably at scale.
+
+The emergence of MCPs (Model Context Protocols), agentic tooling, and programmable AI systems has become especially interesting to me because it sits at the intersection of nearly everything I enjoy building:
+
+- distributed systems
+- protocol design
+- infrastructure
+- orchestration
+- developer tooling
+- systems programming
+- and intelligent execution layers
+
+I’m currently exploring how agents interact with external systems through tooling, execution layers, and blockchain protocols — especially using Go and Rust to build reliable, performant infrastructure around these emerging systems.
 
 <br/>
 
-I’ll leave you with one of my favorite lyrics from the song <a class='text-default font-semibold' href="https://youtu.be/oh0vj_eKHeE?si=KFKCMRM13zdZ3qr6">Survivor's guilt</a> by Dave
+Outside engineering, I spend time practicing **photography** 📸, reading 📚, and deep-researching historical events, systems, and patterns that shape the modern world. Occasionally, those thoughts make their way into my <a class='text-default font-semibold' href="/articles/non-technical">non-technical</a> writings.
+
+<br/>
+
+I’ll leave you with one of my favorite lyrics from the song <a class='text-default font-semibold' href="https://youtu.be/oh0vj_eKHeE?si=KFKCMRM13zdZ3qr6">Survivor's Guilt</a> by Dave
 
 <br/>
 
 **"when you feel like givin' up, know you're close"**.
-
