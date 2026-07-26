@@ -5,9 +5,6 @@ import projects from "../data/projects.json";
 
 const hasProjects = projects.length > 0 && projects[0].name !== "";
 
-const metaFor = (name: string) =>
-  name === "MergeOracle" ? ["Active", "Go · Gemini"] : [];
-
 // Surfaced on the homepage rather than buried three clicks deep — this is
 // the strongest evidence of depth on the site.
 const openSource = [
@@ -37,7 +34,7 @@ const openSource = [
             name={project.name}
             description={project.description}
             url={project.url}
-            meta={metaFor(project.name)}
+            meta={project.meta}
           />
         ))}
       </div>

@@ -18,7 +18,9 @@ This is what interests me most now: the layer where language models stop answeri
 
 It pulls me in because it isn't one discipline. It's distributed systems, protocol design, and infrastructure work wearing a new hat — and most of the hard problems are the old ones: what happens when a call fails, who's allowed to do what, and how you know what actually happened.
 
-[MergeOracle](https://github.com/TheGh0xt/MergeOracle) is where I work this out in practice: a Go CLI that reads GitHub issue and PR threads, summarizes the conversation, and drafts a response with Gemini.
+Right now that means **PMIE**, a prediction market intelligence engine — a Go MCP server exposing market data and tooling, paired with a Python engine that evaluates and orchestrates the agents acting on it. Alongside it, **Trippy**, an agentic application for international travel.
+
+Before those, [MergeOracle](https://github.com/TheGh0xt/MergeOracle): a Go CLI that reads GitHub issue and PR threads, summarizes the conversation, and drafts a response with Gemini. It's finished and usable today.
 
 ### Where it came from
 
