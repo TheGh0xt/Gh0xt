@@ -7,17 +7,31 @@ const hasProjects = projects.length > 0 && projects[0].name !== "";
 
 const metaFor = (name: string) =>
   name === "MergeOracle" ? ["Active", "Go · Gemini"] : [];
+
+// Surfaced on the homepage rather than buried three clicks deep — this is
+// the strongest evidence of depth on the site.
+const openSource = [
+  {
+    name: "librsvg",
+    description:
+      "Implemented parts of the SVG2 text layout algorithm in Rust for GNOME's SVG renderer — text shaping, bidi handling, glyph positioning.",
+    url: "https://gitlab.gnome.org/GNOME/librsvg/-/merge_requests/?sort=created_date&state=merged&author_username=Yorubad-Dev",
+    meta: ["GNOME", "Rust", "Merged"],
+  },
+  {
+    name: "cloud-provider-openstack",
+    description:
+      "Edge-case test coverage and release tagging for OCCM, the component that lets Kubernetes run on OpenStack.",
+    url: "https://github.com/kubernetes/cloud-provider-openstack/pulls?q=is:pr+is:closed+author:TheGh0xt",
+    meta: ["Kubernetes", "Go", "Merged"],
+  },
+];
 ---
 
 <Section title="Selected work" id="projects">
-  <p class="text-sm text-muted leading-relaxed mb-6 max-w-xl">
-    Public work that shows how I think about systems. Most of what I build is
-    private, so these are the ones I can point at.
-  </p>
-
   {
-    hasProjects ? (
-      <div>
+    hasProjects && (
+      <div class="mb-8">
         {projects.map((project) => (
           <WorkCard
             name={project.name}
@@ -27,12 +41,30 @@ const metaFor = (name: string) =>
           />
         ))}
       </div>
-    ) : (
-      <div class="p-10 border border-dashed border-line text-center">
-        <p class="text-xs text-muted uppercase tracking-[0.2em]">
-          Systems in stabilization phase...
-        </p>
-      </div>
     )
   }
+
+  <p class="text-[10px] uppercase tracking-[0.25em] text-muted mb-2">
+    Open source
+  </p>
+
+  <div>
+    {
+      openSource.map((item) => (
+        <WorkCard
+          name={item.name}
+          description={item.description}
+          url={item.url}
+          meta={item.meta}
+        />
+      ))
+    }
+  </div>
+
+  <a
+    href="/open-source-contributions"
+    class="inline-block mt-6 text-xs text-accent hover:opacity-80 transition-opacity"
+  >
+    → all contributions
+  </a>
 </Section>
