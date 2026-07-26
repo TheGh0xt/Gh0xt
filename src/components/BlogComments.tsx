@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from "react";
+import { getSessionId } from "../utils/session";
 
 interface Comment {
   _id: string;
@@ -7,38 +8,41 @@ interface Comment {
   createdAt: string;
 }
 
-interface BlogCommentsProps {
+interface Props {
   postId: string;
 }
 
-export default function BlogComments({ postId }: BlogCommentsProps) {
-  console.log('BlogComments initializing for post:', postId);
+const MAX_CONTENT = 1000;
+
+export default function BlogComments({ postId }: Props) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    content: '',
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    content: "",
+    website: "", // honeypot
   });
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Captured on mount so the server can reject instant submissions.
+  const renderedAt = useRef(Date.now());
 
   useEffect(() => {
-    fetchComments();
+    fetch(`/api/comments?postId=${encodeURIComponent(postId)}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => setComments(data?.comments ?? []))
+      .catch(() => {
+        /* comments are non-critical; leave the list empty */
+      })
+      .finally(() => setLoading(false));
   }, [postId]);
-
-  const fetchComments = async () => {
-    try {
-      const response = await fetch(`/api/comments?postId=${postId}`);
-      const data = await response.json();
-      setComments(data.comments || []);
-    } catch (error) {
-      console.error('Failed to fetch comments:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,62 +50,75 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
     setMessage(null);
 
     try {
-      const response = await fetch('/api/comments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ postId, ...formData }),
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId,
+          ...form,
+          renderedAt: renderedAt.current,
+          sessionId: getSessionId(),
+        }),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (response.ok) {
+      if (res.ok) {
         setMessage({
-          type: 'success',
-          text: 'Comment submitted! It will appear after approval.'
+          type: "success",
+          text: "Submitted. It'll appear once approved.",
         });
-        setFormData({ name: '', email: '', content: '' });
+        setForm({ name: "", email: "", content: "", website: "" });
         setShowForm(false);
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to submit comment' });
+        setMessage({
+          type: "error",
+          text: data.error ?? "Failed to submit comment",
+        });
       }
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to submit comment. Please try again.' });
+    } catch {
+      setMessage({
+        type: "error",
+        text: "Failed to submit comment. Please try again.",
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+  const formatDate = (value: string) =>
+    new Date(value).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
-  };
+
+  const field =
+    "w-full px-3 py-2 bg-transparent border border-line focus:border-accent focus:outline-none text-fg text-sm transition-colors placeholder:text-muted/60";
 
   return (
-    <div className="mt-16 pt-8 border-t border-white/10">
+    <section className="mt-16 pt-8 border-t border-line">
       <div className="flex items-center justify-between mb-8">
-        <h3 className="text-2xl font-bold text-white">
-          Comments {comments.length > 0 && <span className="text-white/40 text-lg ml-2">({comments.length})</span>}
-        </h3>
+        <h2 className="text-[10px] uppercase tracking-[0.25em] text-muted">
+          Comments{comments.length > 0 && ` (${comments.length})`}
+        </h2>
+
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all border border-white/10 text-sm font-medium"
+            className="text-xs text-accent hover:opacity-80 transition-opacity"
           >
-            Leave a comment
+            + leave a comment
           </button>
         )}
       </div>
 
       {message && (
         <div
-          className={`mb-8 p-4 rounded-xl border ${
-            message.type === 'success'
-              ? 'bg-green-500/5 border-green-500/20 text-green-400'
-              : 'bg-red-500/5 border-red-500/20 text-red-400'
+          className={`mb-8 p-3 border text-sm ${
+            message.type === "success"
+              ? "border-accent/40 text-accent"
+              : "border-red-500/40 text-red-400"
           }`}
         >
           {message.text}
@@ -109,114 +126,127 @@ export default function BlogComments({ postId }: BlogCommentsProps) {
       )}
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="mb-12 p-8 bg-white/5 border border-white/10 rounded-2xl relative">
-          <button
-            type="button"
-            onClick={() => setShowForm(false)}
-            className="absolute top-6 right-6 text-white/40 hover:text-white transition-colors"
-            aria-label="Close form"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+        <form onSubmit={handleSubmit} className="mb-12 space-y-4">
+          {/* Honeypot — hidden from real users, tempting to bots. */}
+          <div className="absolute left-[-9999px]" aria-hidden="true">
+            <label htmlFor="website">Website</label>
+            <input
+              type="text"
+              id="website"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              value={form.website}
+              onChange={(e) => setForm({ ...form, website: e.target.value })}
+            />
+          </div>
 
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-white/60 mb-2">
-                  Name <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  required
-                  maxLength={100}
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-white/30 text-white transition-colors placeholder:text-white/20"
-                  placeholder="Your name"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-white/60 mb-2">
-                  Email <span className="text-white/20 text-xs">(optional)</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-white/30 text-white transition-colors placeholder:text-white/20"
-                  placeholder="your.email@example.com"
-                />
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-[10px] uppercase tracking-widest text-muted mb-2"
+              >
+                Name *
+              </label>
+              <input
+                type="text"
+                id="name"
+                required
+                maxLength={100}
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className={field}
+                placeholder="Your name"
+              />
             </div>
 
             <div>
-              <label htmlFor="content" className="block text-sm font-medium text-white/60 mb-2">
-                Comment <span className="text-red-400">*</span>
-              </label>
-              <textarea
-                id="content"
-                required
-                maxLength={1000}
-                rows={5}
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-white/30 text-white transition-colors placeholder:text-white/20 resize-none"
-                placeholder="Share your thoughts..."
-              />
-              <div className="flex justify-end mt-2">
-                <span className="text-[10px] text-white/30 uppercase tracking-wider">
-                  {formData.content.length}/1000 characters
-                </span>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                disabled={submitting}
-                className="flex-1 px-8 py-3 bg-white text-black font-semibold rounded-xl hover:bg-white/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              <label
+                htmlFor="email"
+                className="block text-[10px] uppercase tracking-widest text-muted mb-2"
               >
-                {submitting ? 'Submitting...' : 'Post Comment'}
-              </button>
+                Email (optional)
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className={field}
+                placeholder="Never shown publicly"
+              />
             </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="content"
+              className="block text-[10px] uppercase tracking-widest text-muted mb-2"
+            >
+              Comment *
+            </label>
+            <textarea
+              id="content"
+              required
+              maxLength={MAX_CONTENT}
+              rows={5}
+              value={form.content}
+              onChange={(e) => setForm({ ...form, content: e.target.value })}
+              className={`${field} resize-none`}
+              placeholder="Share your thoughts..."
+            />
+            <div className="mt-1.5 text-right text-[10px] text-muted tabular-nums">
+              {form.content.length}/{MAX_CONTENT}
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="px-5 py-2 border border-accent text-accent text-xs hover:bg-accent hover:text-bg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {submitting ? "submitting..." : "post comment"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowForm(false)}
+              className="px-5 py-2 border border-line text-muted text-xs hover:border-fg/30 transition-colors"
+            >
+              cancel
+            </button>
           </div>
         </form>
       )}
 
       {loading ? (
         <div className="space-y-4">
-          {[1, 2].map(i => (
-            <div key={i} className="h-32 bg-white/5 rounded-2xl animate-pulse" />
-          ))}
+          <div className="h-20 bg-line/50 animate-pulse" />
+          <div className="h-20 bg-line/50 animate-pulse" />
         </div>
       ) : comments.length === 0 ? (
-        <div className="text-center py-12 p-8 bg-white/5 border border-dashed border-white/10 rounded-2xl">
-          <p className="text-white/40 italic">No comments yet. Be the first to share your thoughts!</p>
-        </div>
+        <p className="text-sm text-muted">
+          No comments yet. Be the first to say something.
+        </p>
       ) : (
         <div className="space-y-6">
           {comments.map((comment) => (
-            <div
-              key={comment._id}
-              className="p-8 bg-white/5 border border-white/10 rounded-2xl hover:border-white/20 transition-all group"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h4 className="font-bold text-lg text-white group-hover:text-blue-400 transition-colors">{comment.name}</h4>
-                <time className="text-xs text-white/30 uppercase tracking-widest font-medium">
+            <article key={comment._id} className="py-4 border-b border-line">
+              <div className="flex items-baseline justify-between gap-4 mb-2">
+                <h3 className="text-sm text-fg">{comment.name}</h3>
+                <time className="text-xs text-muted shrink-0">
                   {formatDate(comment.createdAt)}
                 </time>
               </div>
-              <p className="text-white/70 leading-relaxed whitespace-pre-wrap">
+              <p className="text-sm text-muted leading-relaxed whitespace-pre-wrap">
                 {comment.content}
               </p>
-            </div>
+            </article>
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }

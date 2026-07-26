@@ -63,6 +63,14 @@ export default defineType({
       readOnly: true,
     }),
     defineField({
+      name: 'viewCount',
+      title: 'View Count',
+      type: 'number',
+      initialValue: 0,
+      readOnly: true,
+      description: 'Incremented automatically by the site. Do not edit by hand.',
+    }),
+    defineField({
       name: 'body',
       title: 'Body',
       type: 'blockContent',

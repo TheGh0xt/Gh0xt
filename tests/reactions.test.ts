@@ -41,7 +41,7 @@ describe("reactions", () => {
   });
 
   it("builds a query that parameterises every emoji", () => {
-    const { query, emojiParams } = buildReactionQuery();
+    const { emojiParams } = buildReactionQuery();
     expect(Object.keys(emojiParams)).toHaveLength(REACTIONS.length);
     expect(emojiParams.e0).toBe("👍");
   });

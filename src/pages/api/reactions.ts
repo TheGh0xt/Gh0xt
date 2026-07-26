@@ -1,97 +1,114 @@
 import type { APIRoute } from "astro";
 import { sanity } from "../../utils/sanityClient";
 import { sanityWriteClient } from "../../utils/sanityWriteClient";
+import { rateLimit } from "../../utils/rateLimit";
+import {
+  isAllowedEmoji,
+  isValidSessionId,
+  buildReactionQuery,
+  shapeCounts,
+} from "../../utils/reactions";
+
+export const prerender = false;
+
+const json = (data: unknown, status = 200) =>
+  new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+
+/**
+ * Returns per-emoji counts plus the CALLER'S OWN reactions only.
+ * No other visitor's sessionId is ever included in a response.
+ */
+async function readState(postId: string, sessionId: string) {
+  const { query, emojiParams } = buildReactionQuery();
+
+  const raw = await sanity.fetch(query, {
+    postId,
+    sessionId,
+    ...emojiParams,
+  });
+
+  return {
+    counts: shapeCounts(raw ?? {}),
+    mine: Array.isArray(raw?.mine) ? raw.mine.filter(isAllowedEmoji) : [],
+  };
+}
 
 export const GET: APIRoute = async ({ url }) => {
   const postId = url.searchParams.get("postId");
+  const sessionId = url.searchParams.get("sessionId") ?? "";
 
   if (!postId) {
-    return new Response(JSON.stringify({ error: "Post ID is required" }), {
-      status: 400,
-    });
+    return json({ error: "Post ID is required" }, 400);
   }
 
+  // An absent or malformed session simply has no reactions of its own.
+  const safeSession = isValidSessionId(sessionId) ? sessionId : "__none__";
+
   try {
-    const query = `*[_type == "reaction" && post._ref == $postId] {
-      emoji,
-      sessionId
-    }`;
-    const reactions = await sanity.fetch(query, { postId });
-
-    // Group and count reactions
-    const counts = reactions.reduce((acc: any, curr: any) => {
-      acc[curr.emoji] = (acc[curr.emoji] || 0) + 1;
-      return acc;
-    }, {});
-
-    return new Response(JSON.stringify({ counts, reactions }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return json(await readState(postId, safeSession));
   } catch (error) {
     console.error("Failed to fetch reactions:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to fetch reactions" }),
-      { status: 500 },
-    );
+    return json({ error: "Failed to fetch reactions" }, 500);
   }
 };
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, clientAddress }) => {
+  let body: any;
+
   try {
-    const body = await request.json();
-    const { postId, emoji, sessionId } = body;
+    body = await request.json();
+  } catch {
+    return json({ error: "Invalid JSON" }, 400);
+  }
 
-    if (!postId || !emoji || !sessionId) {
-      return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
-        { status: 400 },
-      );
-    }
+  const { postId, emoji, sessionId } = body ?? {};
 
-    if (!import.meta.env.SANITY_API_WRITE_TOKEN) {
-      return new Response(
-        JSON.stringify({ error: "Sanity write token not configured" }),
-        { status: 500 },
-      );
-    }
+  if (typeof postId !== "string" || !postId.trim()) {
+    return json({ error: "Post ID is required" }, 400);
+  }
 
-    // Check if the user already reacted with this emoji
-    const existingQuery = `*[_type == "reaction" && post._ref == $postId && emoji == $emoji && sessionId == $sessionId][0]`;
-    const existing = await sanity.fetch(existingQuery, {
-      postId,
-      emoji,
-      sessionId,
-    });
+  if (!isAllowedEmoji(emoji)) {
+    return json({ error: "Unsupported reaction" }, 400);
+  }
 
-    if (existing) {
-      // Toggle off: Delete the reaction
+  if (!isValidSessionId(sessionId)) {
+    return json({ error: "Invalid session" }, 400);
+  }
+
+  if (!rateLimit(`reactions:${clientAddress}`, 30, 60_000).allowed) {
+    return json({ error: "Too many requests" }, 429);
+  }
+
+  if (!import.meta.env.SANITY_API_WRITE_TOKEN) {
+    console.error("SANITY_API_WRITE_TOKEN is not configured");
+    return json({ error: "Not configured" }, 500);
+  }
+
+  try {
+    const existing = await sanity.fetch(
+      `*[_type == "reaction" && post._ref == $postId && emoji == $emoji && sessionId == $sessionId][0]{_id}`,
+      { postId, emoji, sessionId },
+    );
+
+    if (existing?._id) {
       await sanityWriteClient.delete(existing._id);
-      return new Response(JSON.stringify({ message: "Reaction removed" }), {
-        status: 200,
-      });
     } else {
-      // Toggle on: Create the reaction
-      const result = await sanityWriteClient.create({
+      await sanityWriteClient.create({
         _type: "reaction",
-        post: {
-          _type: "reference",
-          _ref: postId,
-        },
+        post: { _type: "reference", _ref: postId },
         emoji,
         sessionId,
         createdAt: new Date().toISOString(),
       });
-      return new Response(
-        JSON.stringify({ message: "Reaction added", result }),
-        { status: 201 },
-      );
     }
+
+    // Return fresh state so the client needs no follow-up request.
+    return json(await readState(postId, sessionId));
   } catch (error) {
     console.error("Failed to toggle reaction:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to toggle reaction" }),
-      { status: 500 },
-    );
+    return json({ error: "Failed to toggle reaction" }, 500);
   }
 };
