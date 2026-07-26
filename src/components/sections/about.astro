@@ -1,25 +1,26 @@
 ---
-  const { more  } = Astro.props
+import { Content as Intro } from "../../data/intro.md";
 
-  import { Content as Intro } from '../../data/intro.md'
+interface Props {
+  more?: boolean;
+}
+
+const { more = false } = Astro.props;
 ---
 
-<section class="mb-12">
-    
-   
-    <article class="ibm-plex-mono-medium text-sm ">
-      <Intro />
-    </article>
+<section class="mb-16">
+  <article class="content text-sm leading-relaxed">
+    <Intro />
+  </article>
 
-    <br>
-
-    <br>
-
-    
-    
-    {
-      more && <a href="/about" class="text-default" >
-      Discover more about me 🚀
-    </a>
-    }
-  </section>
+  {
+    more && (
+      <a
+        href="/about"
+        class="inline-block mt-4 text-xs text-accent hover:opacity-80 transition-opacity"
+      >
+        → more about me
+      </a>
+    )
+  }
+</section>

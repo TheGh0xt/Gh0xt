@@ -1,19 +1,16 @@
 ---
 import Nav from "./nav.astro";
 
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+
 const personal_urls = [
-  {
-    title: "Github",
-    url: "https://github.com/TheGh0xt",
-  },
-  {
-    title: "LinkedIn",
-    url: "https://linkedin.com/in/adetoye-anointing",
-  },
-  {
-    title: "X (Formerly Twitter)",
-    url: "https://x.com/TheGh0xt",
-  },
+  { title: "Github", url: "https://github.com/TheGh0xt" },
+  { title: "LinkedIn", url: "https://linkedin.com/in/adetoye-anointing" },
+  { title: "X", url: "https://x.com/TheGh0xt" },
   {
     title: "Resume",
     url: "https://docs.google.com/document/d/1iMwjotA1Pp9Hi6a3COwpDdd1F2kA5VKS76jIWN-l6w4/edit?usp=sharing",
@@ -21,32 +18,34 @@ const personal_urls = [
 ];
 ---
 
-<div>
-  <Nav />
+<Nav />
 
-  <header class="text-center mb-12 mt-12">
-    <img
-      src="https://github.com/TheGh0xt.png"
-      alt="Profile picture"
-      width="80"
-      height="80"
-      class="rounded-lg mx-auto mb-4"
-    />
+{
+  !compact && (
+    <header class="text-center mt-12 mb-12">
+      <img
+        src="https://github.com/TheGh0xt.png"
+        alt="Adetoye Anointing"
+        width="72"
+        height="72"
+        loading="eager"
+        class="rounded-full mx-auto mb-4 border border-line"
+      />
 
-    <h1 class="text-3xl font-bold mb-2">Adetoye Anointing</h1>
+      <h1 class="text-2xl mb-3">Adetoye Anointing</h1>
 
-    <div class="flex items-center flex-wrap gap-2 justify-center">
-      {
-        personal_urls.map((items) => (
+      <div class="flex items-center flex-wrap gap-4 justify-center text-xs">
+        {personal_urls.map((item) => (
           <a
-            class="text-default text-xs underline"
-            href={items.url}
+            class="text-muted hover:text-accent transition-colors"
+            href={item.url}
             target="_blank"
+            rel="noopener noreferrer"
           >
-            {items.title}
+            {item.title}
           </a>
-        ))
-      }
-    </div>
-  </header>
-</div>
+        ))}
+      </div>
+    </header>
+  )
+}

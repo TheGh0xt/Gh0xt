@@ -1,139 +1,140 @@
 ---
+export const prerender = true;
+
+import Base from "../../layouts/Base.astro";
 import Header from "../../components/header/index.astro";
-import "../../style/index.css";
+import Section from "../../components/Section.astro";
+
+const major = [
+  {
+    name: "librsvg",
+    org: "GNOME Foundation",
+    url: "https://gitlab.gnome.org/GNOME/librsvg/-/merge_requests/?sort=created_date&state=merged&author_username=Yorubad-Dev",
+    summary:
+      "A high-performance library used by GNOME and others to render SVG into bitmapped images.",
+    detail:
+      "Joined through Outreachy and stayed on as an active contributor. My work centred on the SVG2 text layout algorithm, in Rust.",
+    points: [
+      "Text gathering and precise white-space handling",
+      "Core layout algorithm driven by individual glyph positions",
+      "Bidirectional embedding and vertical text layouts",
+    ],
+  },
+  {
+    name: "cloud-provider-openstack",
+    org: "Kubernetes",
+    url: "https://github.com/kubernetes/cloud-provider-openstack/pulls?q=is:pr+is:closed+author:TheGh0xt",
+    summary:
+      "Lets Kubernetes use OpenStack clouds as a provider, managing LoadBalancers, storage and other resources.",
+    detail:
+      "Focused on reliability: extensive edge-case test coverage, and codebase stability through tagging for OCCM.",
+    points: [],
+  },
+];
+
+const other = [
+  {
+    name: "pkcs11mod",
+    org: "Namecoin",
+    url: "https://github.com/namecoin/pkcs11mod/pulls?q=is:pr+is:closed+author:TheGh0xt",
+    summary: "A PKCS#11 module for Namecoin, for security and hardware integration.",
+  },
+];
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Open Source Contributions</title>
-	</head>
-	<body>
-		<Header title="Open Source Contributions" />
-		<main class="container mx-auto px-4 py-8 max-w-4xl italic">
-			<section class="mb-12">
-				<h2 class="text-md font-semibold mb-4 text-default">
-					Overview
-				</h2>
-				<p class="leading-relaxed text-sm opacity-90">
-					Open-source contribution is where my passion for systems and
-					software engineering meets real-world impact. I focus on
-					building resilient infrastructure and ensuring software
-					reliability through rigorous testing and optimization.
-				</p>
-			</section>
+<Base
+  title="Open Source — Adetoye Anointing"
+  description="Contributions to librsvg (GNOME), Kubernetes cloud-provider-openstack, and Namecoin pkcs11mod."
+>
+  <Header />
+  <main class="max-w-2xl mx-auto px-4 py-8">
+    <header class="mb-12">
+      <h1 class="text-xl mb-3">Open source</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        Where my interest in systems meets software other people depend on. Most
+        of what I know about infrastructure I learned here rather than at work.
+      </p>
+    </header>
 
-			<section class="mb-12">
-				<h2 class="text-lg font-semibold mb-8">Key Contributions</h2>
+    <Section title="Key contributions">
+      <div class="space-y-10">
+        {
+          major.map((item) => (
+            <div class="border-b border-line pb-8">
+              <div class="flex items-baseline justify-between gap-4 mb-2">
+                <h3 class="text-base text-accent">{item.name}</h3>
+                <span class="text-[10px] uppercase tracking-widest text-muted shrink-0">
+                  {item.org}
+                </span>
+              </div>
 
-				<div class="space-y-12">
-					<!-- Librsvg -->
-					<div class="">
-						<h3 class="text-md italic font-bold mb-2 text-default">
-							Librsvg
-						</h3>
-						<p class="mb-4 italic text-sm opacity-80">
-							A high-performance library used by GNOME and other
-							platforms to render SVG files into bitmapped images.
-						</p>
-						<div class="text-sm leading-relaxed">
-							<a
-								href="https://gitlab.gnome.org/GNOME/librsvg/-/merge_requests/?sort=created_date&state=merged&author_username=Yorubad-Dev&first_page_size=20"
-								class="text-default underline hover:opacity-80 font-bold"
-								target="_blank">View Contributions</a
-							> — As an active contributor (formerly via Outreachy),
-							I focused on <b>optimizations</b> and implementing the
-							<b>SVG2 text layout algorithm</b>. My work included:
-							<ul
-								class="list-disc list-inside mt-2 space-y-1 opacity-90"
-							>
-								<li>
-									Text gathering and precise white-space
-									handling.
-								</li>
-								<li>
-									Implementing the core algorithm based on
-									individual glyph positions.
-								</li>
-								<li>
-									Supporting bidirectional embedding and
-									vertical text layouts.
-								</li>
-							</ul>
-						</div>
-					</div>
+              <p class="text-sm text-muted leading-relaxed mb-3">
+                {item.summary}
+              </p>
 
-					<!-- Kubernetes CPO -->
-					<div class="">
-						<h3 class="text-md italic font-bold mb-2 text-default">
-							Kubernetes Cloud Provider OpenStack
-						</h3>
-						<p class="mb-4 italic text-sm opacity-80">
-							A project that allows Kubernetes to utilize
-							OpenStack clouds as a provider, managing resources
-							like LoadBalancers and storage.
-						</p>
-						<p class="text-sm leading-relaxed">
-							<a
-								href="https://github.com/kubernetes/cloud-provider-openstack/pulls?q=is:pr+is:closed+author:TheGh0xt"
-								class="text-default underline hover:opacity-80 font-bold"
-								target="_blank">View Contributions</a
-							> — I focused on enhancing the project's reliability by
-							writing <b>extensive edge-case tests</b> and managing
-							codebase stability through tagging for <b>OCCM</b>,
-							ensuring robust OpenStack integration in production
-							environments.
-						</p>
-					</div>
+              <p class="text-sm leading-relaxed mb-3">{item.detail}</p>
 
-					<!-- Honorable Mention -->
-					<div class="pt-6 border-t border-gray-800">
-						<h4
-							class="text-sm font-bold mb-2 flex items-center gap-2"
-						>
-							<span class="text-default">🏅</span> Honorable Mention
-						</h4>
-						<p class="text-sm italic opacity-80">
-							Received a formal mention in the <a
-								href="https://gitlab.gnome.org/GNOME/librsvg/-/releases/2.59.2"
-								class="text-default underline"
-								target="_blank">Librsvg 2.59.2 release</a
-							> for contributions to the project's evolution.
-						</p>
-					</div>
-				</div>
-			</section>
+              {item.points.length > 0 && (
+                <ul class="text-sm text-muted space-y-1.5 mb-4">
+                  {item.points.map((point) => (
+                    <li class="relative pl-5">
+                      <span class="absolute left-0 text-accent">▸</span>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-			<section class="mb-12">
-				<h2 class="text-md font-semibold mb-6 opacity-60">
-					Other Contributions
-				</h2>
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-					<div class="">
-						<h4 class="text-sm font-bold mb-2">
-							Namecoin pkcs11mod
-						</h4>
-						<p class="text-xs italic opacity-70 mb-2">
-							A PKCS#11 module for Namecoin, enhancing security
-							and hardware integration.
-						</p>
-						<a
-							href="https://github.com/namecoin/pkcs11mod/pulls?q=is:pr+is:closed+author:TheGh0xt"
-							class="text-xs text-default underline">View PRs</a
-						>
-					</div>
-				</div>
-			</section>
-		</main>
-		<footer
-			class="mt-20 pb-20 text-center text-sm border-t border-gray-800/30 pt-8"
-		>
-			<p class="text-gray-500 italic">
-				"Turning complex problems into elegant code, one commit at a
-				time."
-			</p>
-		</footer>
-	</body>
-</html>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-xs text-accent hover:opacity-80 transition-opacity"
+              >
+                view contributions →
+              </a>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-8 text-sm text-muted leading-relaxed">
+        <span class="text-accent">★</span> Mentioned in the{" "}
+        <a
+          href="https://gitlab.gnome.org/GNOME/librsvg/-/releases/2.59.2"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-accent hover:opacity-80 transition-opacity"
+        >
+          librsvg 2.59.2 release
+        </a>{" "}
+        for contributions to the project.
+      </div>
+    </Section>
+
+    <Section title="Elsewhere">
+      <div>
+        {
+          other.map((item) => (
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group block py-4 border-b border-line hover:border-accent/40 transition-colors"
+            >
+              <div class="flex items-baseline justify-between gap-4">
+                <span class="text-sm group-hover:text-accent transition-colors">
+                  {item.name}
+                </span>
+                <span class="text-[10px] uppercase tracking-widest text-muted shrink-0">
+                  {item.org}
+                </span>
+              </div>
+              <p class="mt-1.5 text-sm text-muted">{item.summary}</p>
+            </a>
+          ))
+        }
+      </div>
+    </Section>
+  </main>
+</Base>

@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # vercel build output
 .vercel/
+
+# sanity studio build output
+blog/dist/

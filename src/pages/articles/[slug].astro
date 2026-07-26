@@ -1,158 +1,104 @@
 ---
 export const prerender = false;
 
+import Base from "../../layouts/Base.astro";
 import Header from "../../components/header/index.astro";
-import "../../style/index.css";
 import { getSanityPostBySlug } from "../../utils/getSanityPostBySlug";
 import { portableTextToHtml } from "../../utils/portableTextToHtml";
+import { renderMarkdown } from "../../utils/markdownRenderer";
 
 const { slug } = Astro.params;
 
 if (!slug) {
-  return new Response(null, {
-    status: 404,
-    statusText: "Not Found",
-  });
+  return new Response(null, { status: 404, statusText: "Not Found" });
 }
 
-const post = await getSanityPostBySlug(slug);
+let post: any = null;
+try {
+  post = await getSanityPostBySlug(slug);
+} catch (error) {
+  console.error("Failed to load post:", error);
+}
 
 if (!post) {
-  return new Response(null, {
-    status: 404,
-    statusText: "Note not found",
-  });
+  return new Response(null, { status: 404, statusText: "Not Found" });
 }
 
-const {
-  title,
-  description: desc,
-  tags,
-  publishedAt,
-  body,
-  markdown,
-  mainImage,
-} = post;
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, s-maxage=60, stale-while-revalidate=300",
+);
 
-import { renderMarkdown } from "../../utils/markdownRenderer";
+const { title, description, publishedAt, body, markdown, mainImage } = post;
+
+const date = publishedAt
+  ? new Date(publishedAt).toLocaleDateString("en-US", { dateStyle: "long" })
+  : null;
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content={desc || "Personal articles and thoughts"}
-    />
-    <meta name="author" content="Adetoye Anointing" />
-    <meta property="og:title" content={title} />
-    <meta
-      property="og:description"
-      content={desc || "Personal articles and thoughts"}
-    />
+<Base
+  title={`${title} — Adetoye Anointing`}
+  description={description || "Personal articles and thoughts"}
+  image={mainImage?.asset?.url}
+  type="article"
+  publishedAt={publishedAt ? new Date(publishedAt).toISOString() : undefined}
+>
+  <Header compact={true} />
+
+  <main class="max-w-2xl mx-auto px-4 py-8">
+    <a
+      href="/articles"
+      class="text-xs text-muted hover:text-accent transition-colors"
+    >
+      ← articles
+    </a>
+
+    <header class="mt-8 mb-10">
+      <h1 class="text-xl md:text-2xl leading-snug mb-4">{title}</h1>
+      {description && <p class="text-sm text-muted leading-relaxed">{description}</p>}
+
+      <div class="mt-4 flex items-center gap-4 text-xs text-muted">
+        {date && <time datetime={publishedAt}>{date}</time>}
+      </div>
+    </header>
+
     {
       mainImage?.asset?.url && (
-        <meta property="og:image" content={mainImage.asset.url} />
+        <figure class="mb-10">
+          <img
+            src={mainImage.asset.url}
+            alt={mainImage.alt || title}
+            class="w-full h-auto border border-line"
+            loading="lazy"
+          />
+          {mainImage.caption && (
+            <figcaption class="mt-3 text-center text-xs text-muted">
+              {mainImage.caption}
+            </figcaption>
+          )}
+        </figure>
       )
     }
-    <meta property="og:type" content="article" />
-    <meta
-      property="article:published_time"
-      content={publishedAt ? new Date(publishedAt).toISOString() : ""}
-    />
-    <!-- @ts-ignore -->
-    {
-      (tags as any[])?.map((tag: string) => (
-        <meta property="article:tag" content={tag} />
-      ))
-    }
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta
-      name="twitter:description"
-      content={desc || "Personal articles and thoughts"}
-    />
-    <title>{title} | Articles</title>
-  </head>
-  <body>
-    <Header title={title} />
-    <main class="container mx-auto px-4 py-8 max-w-4xl">
-      <div class="w-fit max-w-full flex items-start gap-2 mt-6 mx-auto">
-        <main class="container">
-          <div class="mb-8">
-            <h1
-              class="text-xl md:text-3xl font-bold leading-tight tracking-normal text-default"
-            >
-              {title}
-            </h1>
-            {desc && <p class="text-md mt-4 italic opacity-80">{desc}</p>}
-            <p class="mt-4 text-xs italic opacity-60">
-              Published on <b
-                >{
-                  publishedAt
-                    ? new Date(publishedAt).toLocaleDateString("en-US", {
-                        dateStyle: "long",
-                      })
-                    : "Unknown"
-                }</b
-              >
-            </p>
-          </div>
 
-          {
-            mainImage?.asset?.url && (
-              <figure class="mb-12">
-                <img
-                  src={mainImage.asset.url}
-                  alt={mainImage.alt || title}
-                  class="w-full h-auto rounded-xl border border-white/10 shadow-2xl"
-                />
-                {mainImage.caption && (
-                  <figcaption class="mt-4 text-center text-xs italic opacity-50">
-                    {mainImage.caption}
-                  </figcaption>
-                )}
-              </figure>
-            )
-          }
-
-          <article class="portable-text">
-            {
-              body && body.length > 0 ? (
-                <div set:html={portableTextToHtml(body)} />
-              ) : markdown ? (
-                <div set:html={renderMarkdown(markdown)} />
-              ) : (
-                <p class="italic opacity-50">No content available.</p>
-              )
-            }
-          </article>
-
-          {
-            /* Navigation removed: previousNote/nextNote logic is not available with Sanity fetch. */
-          }
-
-          <div class="mt-12 pt-8">
-            <a href="/articles" class="text-default hover:underline"
-              >← Back to Articles</a
-            >
-          </div>
-        </main>
-      </div>
-    </main>
-
-    <style>
-      .prose {
-        color: inherit;
-        font-family: inherit;
+    <article class="portable-text">
+      {
+        body && body.length > 0 ? (
+          <div set:html={portableTextToHtml(body)} />
+        ) : markdown ? (
+          <div set:html={renderMarkdown(markdown)} />
+        ) : (
+          <p class="text-muted">No content available.</p>
+        )
       }
+    </article>
 
-      /* Base spacing for the article content */
-      article {
-        margin-top: 2rem;
-      }
-    </style>
-  </body>
-</html>
+    <div class="mt-16 pt-8 border-t border-line">
+      <a
+        href="/articles"
+        class="text-xs text-accent hover:opacity-80 transition-opacity"
+      >
+        ← back to articles
+      </a>
+    </div>
+  </main>
+</Base>

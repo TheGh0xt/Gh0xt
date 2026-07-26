@@ -1,19 +1,19 @@
 ---
+export const prerender = true;
+
+import Base from "../../layouts/Base.astro";
 import Header from "../../components/header/index.astro";
-import "../../style/index.css";
 import { Content as AboutMe } from "../../data/about.md";
 ---
 
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>👤 Whoami</title>
-    </head>
-    <body>
-        <section id="about" class="max-w-2xl mx-auto px-4 py-8">
-            <Header />
-            <AboutMe />
-        </section>
-    </body>
-</html>
+<Base
+  title="Whoami — Adetoye Anointing"
+  description="Software engineer building backend systems and AI / agentic tooling. Go, Python, Rust, and a bias toward systems that stay understandable."
+>
+  <Header />
+  <main id="about" class="max-w-2xl mx-auto px-4 py-8">
+    <article class="content text-sm leading-relaxed">
+      <AboutMe />
+    </article>
+  </main>
+</Base>

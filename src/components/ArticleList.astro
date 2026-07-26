@@ -1,0 +1,39 @@
+---
+import PostCard from "./PostCard.astro";
+
+interface Post {
+  _id: string;
+  title: string;
+  slug?: { current?: string };
+  description?: string;
+  publishedAt?: string;
+  viewCount?: number;
+}
+
+interface Props {
+  posts: Post[];
+  empty: string;
+}
+
+const { posts, empty } = Astro.props;
+
+const renderable = posts.filter((post) => post.slug?.current);
+---
+
+{
+  renderable.length > 0 ? (
+    <div>
+      {renderable.map((post) => (
+        <PostCard
+          title={post.title}
+          slug={post.slug!.current!}
+          description={post.description}
+          publishedAt={post.publishedAt}
+          viewCount={post.viewCount}
+        />
+      ))}
+    </div>
+  ) : (
+    <p class="text-sm text-muted">{empty}</p>
+  )
+}

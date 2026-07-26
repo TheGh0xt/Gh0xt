@@ -1,116 +1,46 @@
 ---
 export const prerender = false;
+
+import Base from "../../layouts/Base.astro";
 import Header from "../../components/header/index.astro";
-import "../../style/index.css";
+import ArticleList from "../../components/ArticleList.astro";
 import { getSanityPosts } from "../../utils/getSanityPosts";
 
-const posts = await getSanityPosts();
-const technicalPosts = posts.filter((post: any) =>
-    post.tags?.includes("technical"),
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, s-maxage=60, stale-while-revalidate=300",
 );
+
+let posts: any[] = [];
+try {
+  const all = await getSanityPosts();
+  posts = all.filter((post: any) => post.tags?.includes("technical"));
+} catch (error) {
+  console.error("Failed to load technical posts:", error);
+}
 ---
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Technical Articles | Articles</title>
-        <link rel="stylesheet" href="/src/style/index.css" />
-    </head>
-    <body>
-        <Header title="Technical Articles" />
-        <main class="max-w-4xl mx-auto px-4 py-8">
-            <div class="mb-8">
-                <a href="/articles" class="text-default text-sm hover:underline"
-                    >← Back to Selection</a
-                >
-            </div>
+<Base
+  title="Technical — Adetoye Anointing"
+  description="Backend architecture, agentic systems, systems programming, and the things that break in production."
+>
+  <Header />
+  <main class="max-w-2xl mx-auto px-4 py-8">
+    <a
+      href="/articles"
+      class="text-xs text-muted hover:text-accent transition-colors"
+    >
+      ← articles
+    </a>
 
-            <header class="mb-12">
-                <h1 class="text-xl font-bold mb-4 text-default">
-                    Technical Articles
-                </h1>
-                <p class="text-sm italic opacity-80">
-                    Deep dives, tutorials, and explorations into the world of
-                    software engineering and systems architecture.
-                </p>
-            </header>
+    <header class="mt-8 mb-10">
+      <h1 class="text-xl mb-3">Technical</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        Backend architecture, agentic systems, systems programming, and the
+        things that break in production.
+      </p>
+    </header>
 
-            <section class="mb-12">
-                {
-                    technicalPosts.length > 0 ? (
-                        <div class="space-y-16">
-                            {technicalPosts.map((post: any) => (
-                                <div class="group grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
-                                    {post.mainImage?.asset?.url && (
-                                        <div class="md:col-span-1 overflow-hidden rounded-lg border border-white/5 group-hover:border-default transition-colors">
-                                            <a
-                                                href={`/articles/${post.slug.current}`}
-                                            >
-                                                <img
-                                                    src={
-                                                        post.mainImage.asset.url
-                                                    }
-                                                    alt={
-                                                        post.mainImage.alt ||
-                                                        post.title
-                                                    }
-                                                    class="w-full h-32 md:h-24 object-cover group-hover:scale-105 transition-transform duration-500"
-                                                />
-                                            </a>
-                                        </div>
-                                    )}
-                                    <div
-                                        class={
-                                            post.mainImage?.asset?.url
-                                                ? "md:col-span-3"
-                                                : "md:col-span-4"
-                                        }
-                                    >
-                                        <h3 class="text-lg font-bold mb-2">
-                                            <a
-                                                href={`/articles/${post.slug.current}`}
-                                                class="text-default hover:underline"
-                                            >
-                                                {post.title}
-                                            </a>
-                                        </h3>
-                                        {post.description && (
-                                            <p class="mb-3 text-sm italic opacity-80 line-clamp-2">
-                                                {post.description}
-                                            </p>
-                                        )}
-                                        <p class="text-xs italic opacity-60">
-                                            Published on{" "}
-                                            {post.publishedAt
-                                                ? new Date(
-                                                      post.publishedAt,
-                                                  ).toLocaleDateString(
-                                                      "en-US",
-                                                      {
-                                                          dateStyle: "long",
-                                                      },
-                                                  )
-                                                : "Unknown"}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <p class="italic opacity-60">Coming soon...</p>
-                    )
-                }
-            </section>
-
-            <footer
-                class="mt-20 pt-8 text-center text-sm border-t border-gray-800/30"
-            >
-                <p class="text-gray-500 italic">
-                    May your code be lean and your architecture resilient.
-                </p>
-            </footer>
-        </main>
-    </body>
-</html>
+    <ArticleList posts={posts} empty="Nothing published here yet." />
+  </main>
+</Base>
