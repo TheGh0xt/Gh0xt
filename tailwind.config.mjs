@@ -4,10 +4,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        default: "#ec4899",
+        bg: "#141414",
+        fg: "#c8ccda",
+        muted: "#6b7280",
+        line: "#262626",
+        accent: "#ec4899",
       },
-      fontFamily: {},
-      animation: {},
+      fontFamily: {
+        mono: ['"IBM Plex Mono"', "ui-monospace", "SFMono-Regular", "monospace"],
+      },
     },
   },
   plugins: [],
