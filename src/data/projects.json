@@ -1,8 +1,18 @@
 [
   {
+    "name": "PMIE — Prediction Market Intelligence Engine",
+    "description": "An agentic system for prediction markets. A Go MCP server exposes market data and tooling; a Python engine evaluates and orchestrates the agents acting on it.",
+    "meta": ["In progress", "Go · Python", "MCP"]
+  },
+  {
+    "name": "Trippy",
+    "description": "An agentic application for international travel.",
+    "meta": ["In progress", "Go", "Agentic"]
+  },
+  {
     "name": "MergeOracle",
-    "description": "A fast CLI that analyzes GitHub issues/PRs, provide conversations summaries, suggests a fix and generates a quick response for you.",
+    "description": "A CLI that analyzes GitHub issues and PRs, summarizes the conversation, suggests a fix, and drafts a response for you.",
     "url": "https://github.com/TheGh0xt/MergeOracle",
-    "featured": true
+    "meta": ["Shipped", "Go · Gemini"]
   }
 ]

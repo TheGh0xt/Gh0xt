@@ -5,5 +5,7 @@
     "jsxImportSource": "react",
     "skipLibCheck": true,
     "noEmit": true
-  }
+  },
+  "include": ["src", "*.mjs", "*.ts", "tests"],
+  "exclude": ["node_modules", "dist", ".vercel", "blog"]
 }

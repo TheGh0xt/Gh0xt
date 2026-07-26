@@ -1,43 +1,45 @@
-I’m a software engineer driven by curiosity for how systems work beneath the abstraction layers. My engineering journey started from backend development, but over time it evolved into something broader: distributed systems, infrastructure, systems-level engineering, and the growing intersection between AI agents and programmable systems.
+I'm a software engineer who cares about what's happening underneath the abstraction layers. These days that means two things: backend systems that hold up, and the tooling that lets AI agents act on real systems without falling over.
 
-<br/>
+I build primarily in **Go and Python**, with Rust where it earns its place. I don't have a favorite framework — I have a bias toward whatever leaves the system understandable a year later.
 
-For most of my career, I’ve built secure, scalable backend services with Go, focusing heavily on architecture, reliability, and maintainability. But what pushed my growth furthest was open source. Contributing to large-scale projects exposed me to engineering problems far beyond traditional product development and taught me how critical infrastructure powering millions of users is designed, maintained, and evolved collaboratively.
+### How I build
 
-<br/>
+Most of what separates a demo from a system is what happens on the unhappy path. The principles I hold to:
 
-My technical foundation was heavily shaped by Linux and the open-source ecosystem. I spent years experimenting with distributions, breaking systems, recovering them, rebuilding environments, and understanding the operating system layer deeply enough to stop treating it like magic. Those experiences became my unofficial systems engineering training ground and fundamentally changed how I think about software.
+- **Failure is a design input.** Timeouts, retries, and idempotency decided up front — not bolted on after the first incident.
+- **Least privilege, especially for agents.** An agent with a tool is an actor with permissions. Scope it like one.
+- **You must be able to answer "what happened?"** Tracing and structured logs, so behavior is reconstructable rather than guessed at.
+- **Boundaries before cleverness.** Clear contracts between components beat a clever monolith every time.
+- **Tests where the risk is.** Not coverage theater — tests on the logic that will actually hurt when it breaks.
 
-<br/>
+### Agentic systems
 
-Open source and community leadership have remained a core part of my path. I served as the Lead for the **Google Developer Student Club (now GDG on Campus)** at my university from 2022 to 2023, organizing technical events and helping grow a local engineering community around collaborative learning and experimentation.
+This is what interests me most now: the layer where language models stop answering questions and start operating infrastructure. I've built with **ADK, LangChain, LangGraph**, and **MCP** — and equally often decided a framework was overhead and written the orchestration directly. Knowing which call to make is most of the value.
 
-Later, I was selected as an Outreachy intern for the **GNOME Foundation (2024–2025)**, where I contributed to <a class='text-default font-semibold' href="https://gitlab.gnome.org/GNOME/librsvg">Librsvg</a>. My work focused on implementing parts of the SVG2 text layout algorithm in Rust — work involving rendering systems, text shaping, bidi handling, and specification-driven engineering. I remain an active contributor while also engaging with infrastructure-related work across the ecosystem.
+It pulls me in because it isn't one discipline. It's distributed systems, protocol design, and infrastructure work wearing a new hat — and most of the hard problems are the old ones: what happens when a call fails, who's allowed to do what, and how you know what actually happened.
 
-<br/>
+Right now that means **PMIE**, a prediction market intelligence engine — a Go MCP server exposing market data and tooling, paired with a Python engine that evaluates and orchestrates the agents acting on it. Alongside it, **Trippy**, an agentic application for international travel.
 
-Recently, my focus has shifted deeper into **protocol and systems engineering**. I’m particularly interested in blockchain infrastructure, distributed coordination systems, AI agent tooling, and compute/network layers that enable autonomous systems to operate reliably at scale.
+Before those, [MergeOracle](https://github.com/TheGh0xt/MergeOracle): a Go CLI that reads GitHub issue and PR threads, summarizes the conversation, and drafts a response with Gemini. It's finished and usable today.
 
-The emergence of MCPs (Model Context Protocols), agentic tooling, and programmable AI systems has become especially interesting to me because it sits at the intersection of nearly everything I enjoy building:
+### Where it came from
 
-- distributed systems
-- protocol design
-- infrastructure
-- orchestration
-- developer tooling
-- systems programming
-- and intelligent execution layers
+What pushed me furthest was open source. Contributing to large projects put me in front of problems product work never surfaces: how infrastructure serving millions of people is actually designed, maintained, and argued about in public.
 
-I’m currently exploring how agents interact with external systems through tooling, execution layers, and blockchain protocols — especially using Go and Rust to build reliable, performant infrastructure around these emerging systems.
+My foundation came from **Linux** — years of installing distributions, breaking them, recovering them, and rebuilding environments until the operating system stopped feeling like magic. That was my unofficial systems engineering training, and it still shapes how I read a stack trace.
 
-<br/>
+I was an Outreachy intern with the **GNOME Foundation (2024–2025)**, working on [librsvg](https://gitlab.gnome.org/GNOME/librsvg) — implementing parts of the **SVG2 text layout algorithm** in Rust. Text shaping, bidi handling, specification-driven work where the spec is the argument. I'm still a contributor. I've also written edge-case test coverage for [Kubernetes' cloud-provider-openstack](https://github.com/kubernetes/cloud-provider-openstack) and contributed to [Namecoin's pkcs11mod](https://github.com/namecoin/pkcs11mod).
 
-Outside engineering, I spend time practicing **photography** 📸, reading 📚, and deep-researching historical events, systems, and patterns that shape the modern world. Occasionally, those thoughts make their way into my <a class='text-default font-semibold' href="/articles/non-technical">non-technical</a> writings.
+Before that I led the **Google Developer Student Club** (now GDG on Campus) at my university from 2022 to 2023, running technical events and growing a local engineering community.
 
-<br/>
+### Outside engineering
 
-I’ll leave you with one of my favorite lyrics from the song <a class='text-default font-semibold' href="https://youtu.be/oh0vj_eKHeE?si=KFKCMRM13zdZ3qr6">Survivor's Guilt</a> by Dave
+**Photography** 📸, reading 📚, and deep-researching historical events and the patterns behind them. Some of that ends up in my [non-technical](/articles/non-technical) writing.
 
-<br/>
+I'll leave you with a line from [Survivor's Guilt](https://youtu.be/oh0vj_eKHeE) by Dave:
 
-**"when you feel like givin' up, know you're close"**.
+**"when you feel like givin' up, know you're close"**
+
+---
+
+_Available for backend and AI-systems engineering — [get in touch](/reach)._

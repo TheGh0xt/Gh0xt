@@ -9,6 +9,7 @@ export async function getSanityPosts() {
     publishedAt,
     slug,
     tags,
+    viewCount,
     mainImage {
       asset -> {
         url

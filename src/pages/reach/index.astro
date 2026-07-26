@@ -1,77 +1,76 @@
 ---
+export const prerender = true;
+
+import Base from "../../layouts/Base.astro";
 import Header from "../../components/header/index.astro";
-import "../../style/index.css";
+import Section from "../../components/Section.astro";
 import { Content as ReachNote } from "../../data/contact.md";
 
-const personal_urls = [
+const channels = [
   {
-    title: "Github",
+    title: "Email",
+    handle: "adetoyeanointing2002@gmail.com",
+    url: "mailto:adetoyeanointing2002@gmail.com",
+    description: "Best for work enquiries. I read everything.",
+  },
+  {
+    title: "GitHub",
+    handle: "@TheGh0xt",
     url: "https://github.com/TheGh0xt",
-    description:
-      "🐙 Basically my code playground, cool stuff are pushed, bugs are squashed, and I'm pushing 🅿️",
+    description: "Code, open-source contributions, and whatever I'm building.",
   },
   {
     title: "LinkedIn",
+    handle: "adetoye-anointing",
     url: "https://linkedin.com/in/adetoye-anointing",
-    description:
-      "📇 The pretend to be super cool, but it’s mostly just “hey, let’s connect.”",
+    description: "Professional history, if you need the formal version.",
   },
   {
-    title: "Twitter",
+    title: "X",
+    handle: "@TheGh0xt",
     url: "https://x.com/TheGh0xt",
-    description:
-      "🐦 Savoring the whirlwind of information, with all its ups and downs. reposting geeks posts",
-  },
-  {
-    title: "Email",
-    url: "mailto:adetoyeanointing2002@gmail.com",
-    description:
-      '📧 "Jeremiah said, you will seek me and find me!" so don"t hesistate to shoot me an email. pigeon is out of commission - a single mail can create a lovely productive relationship',
+    description: "Short thoughts on systems, and reposts of smarter people.",
   },
   {
     title: "Matrix",
-    url: "https://matrix.to/room/@yorubad_dev:matrix.org",
-    description:
-      "❄️ An opensource decentralized chat platform for my opensource contribution communication.",
+    handle: "@yorubad_dev:matrix.org",
+    url: "https://matrix.to/#/@yorubad_dev:matrix.org",
+    description: "For open-source coordination.",
   },
 ];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>📮 Reach Out</title>
-  </head>
-  <body>
-    <Header />
+<Base
+  title="Contact — Adetoye Anointing"
+  description="Available for backend and AI-systems engineering work — contract or full-time."
+>
+  <Header />
+  <main class="max-w-2xl mx-auto px-4 py-8">
+    <article class="content text-sm leading-relaxed mb-12">
+      <ReachNote />
+    </article>
 
-    <div class="max-w-2xl mx-auto px-4 py-8">
+    <Section title="Channels" id="reach">
       <div>
-        <p>
-          <ReachNote />
-        </p>
+        {
+          channels.map((item) => (
+            <a
+              href={item.url}
+              target={item.url.startsWith("mailto:") ? undefined : "_blank"}
+              rel="noopener noreferrer"
+              class="group block py-4 border-b border-line hover:border-accent/40 transition-colors"
+            >
+              <div class="flex items-baseline justify-between gap-4">
+                <span class="text-sm text-accent">{item.title}</span>
+                <span class="text-xs text-muted shrink-0 truncate">
+                  {item.handle}
+                </span>
+              </div>
+              <p class="mt-1.5 text-sm text-muted">{item.description}</p>
+            </a>
+          ))
+        }
       </div>
-
-      <section id="reach" class="mt-4">
-        <h4>📬 Find Me Online</h4>
-        <ul>
-          {
-            personal_urls.map((item) => (
-              <li>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  class="text-default underline "
-                >
-                  {item.title}
-                </a>
-                : {item.description}
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-    </div>
-  </body>
-</html>
+    </Section>
+  </main>
+</Base>
