@@ -13,6 +13,7 @@ const STATIC_PATHS = [
   "/articles/non-technical",
   "/open-source-contributions",
   "/reach",
+  "/work/omnistant",
 ];
 
 export const GET: APIRoute = async () => {

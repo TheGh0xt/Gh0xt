@@ -1,0 +1,606 @@
+---
+export const prerender = true;
+
+import Base from "../../layouts/Base.astro";
+import Nav from "../../components/header/nav.astro";
+import Prompt from "../../components/Prompt.astro";
+import Section from "../../components/Section.astro";
+import CapabilityRow from "../../components/CapabilityRow.astro";
+
+const REPO = "https://github.com/TheGh0xt/Omnistant";
+const LIVE = "https://omnistant-3oe5odab6a-uc.a.run.app";
+
+const links = [
+  { title: "Live service", url: LIVE },
+  { title: "Source", url: REPO },
+  { title: "Health check", url: `${LIVE}/health` },
+];
+
+// Verified against the repository and the running service on 2026-08-30.
+const stats = [
+  { value: "7", label: "days, solo — first commit to live" },
+  { value: "191+23", label: "tests, hermetic — no db, no network, no key" },
+  { value: "0.87s", label: "to run the whole Python suite" },
+  { value: "8", label: "tools exposed to the model" },
+  { value: "3", label: "scheduled jobs that run with nobody watching" },
+  { value: "0", label: "model calls to answer “where are my keys?”" },
+];
+
+const workflows = [
+  {
+    name: "Leave detection",
+    body: "You say you're heading out. The agent takes a camera frame, asks Gemini what is actually in it, and compares that against the routine it has learned for that destination. Anything missing comes back with a last-known location — then it keeps watching rather than answering once, ticking items off as the camera sees them.",
+  },
+  {
+    name: "Item recall",
+    body: "Searches the observation log and returns every sighting, newest first, each with a confidence that decays with age. A sighting from ten minutes ago is an answer; one from yesterday is a lead, and the agent says which. Costs zero model calls — it is pure SQL.",
+  },
+  {
+    name: "Daily timeline",
+    body: "Reconstructs the day from the log and has Gemini narrate it. The model is handed the events and forbidden from inventing any; when the log is thin, the agent says the log is thin.",
+  },
+];
+
+const autonomy = [
+  {
+    name: "It watches without being asked",
+    body: "The camera stays on and the agent tracks the two transitions a person would also notice: appeared, and left view. That second one is how “I watched you put your AirPods in your bag” gets recorded — not by seeing the bag, but by seeing the AirPods stop being on the desk.",
+  },
+  {
+    name: "It learns when you leave",
+    body: "The pre-departure brief fires in the 25 minutes before the time this routine has actually been observed to happen — the median of the largest cluster of your own departures, not an hour somebody guessed at setup.",
+  },
+  {
+    name: "It follows you out",
+    body: "Two minutes after you leave, if something is still missing, it posts to Slack with the location — so you can decide in one glance whether it is worth turning back.",
+  },
+  {
+    name: "It cancels its own reminders",
+    body: "Every pending nudge is re-checked against the log before delivery. If the item has been seen since the scan that raised it, nothing is sent. Telling someone they forgot the keys they are holding is exactly the noise that gets an assistant muted.",
+  },
+  {
+    name: "It writes its own packing list",
+    body: "Nobody configures a routine. A new destination starts from a sensible default; after that, any item carried on 60% or more of the last eight trips is promoted into that destination's routine automatically. The work check grows to include your badge because you keep taking your badge.",
+  },
+];
+
+const confidence = [
+  ["≥ 0.7", "high", "“it should still be there”"],
+  ["0.4 – 0.7", "medium", "“but that was a while ago, so I'd double-check”"],
+  ["> 0", "low", "“that's old enough that I wouldn't rely on it”"],
+  ["0", "none", "“I have no record”"],
+];
+
+// The product slides, in the order they make the argument.
+const gallery = [
+  {
+    src: "/work/omnistant/idea.png",
+    alt: "Slide reading “You don't forget you own things. You forget what happened to them.” beside the app showing a memory globe of observations.",
+    caption:
+      "Every point on that globe is a row in the observation log. Nothing on it was inferred.",
+  },
+  {
+    src: "/work/omnistant/globe.png",
+    alt: "Slide reading “Filter it down to just your things” beside the app filtering observations to items only, each with a confidence percentage.",
+    caption:
+      "The percentage on each row is the decayed score, not the confidence the camera started with.",
+  },
+  {
+    src: "/work/omnistant/timeline.png",
+    alt: "Slide reading “What did I do today?” beside the app showing the day condensed to six moments on a timeline bar.",
+    caption:
+      "Six of ten moments — the workflow picks which, and Gemini only narrates them.",
+  },
+  {
+    src: "/work/omnistant/wake.png",
+    alt: "Slide reading “Opt-in, and never a hidden hot mic” beside the app asking permission before enabling the wake word.",
+    caption:
+      "Also where the wake word quietly disabled itself after an hour of working fine — the fourth bug below.",
+  },
+];
+
+const failures = [
+  ["Gemini over quota", "429 with Retry-After — and if a tool already ran and persisted, its result is returned rather than thrown away"],
+  ["Vision call fails", "the scan returns available: false with a reason. It says it cannot check, instead of guessing"],
+  ["Narration fails", "falls back to a deterministic list of the day's events"],
+  ["No Gemini credentials", "rules-based routing straight to the workflows; the reply is marked degraded"],
+  ["Postgres or Redis unset", "in-process fallback, and /health reports degraded rather than ok"],
+  ["Slack unreachable", "the job still completes and reports delivered: false — delivery is best-effort, the record is not"],
+];
+
+const stack = [
+  {
+    label: "Agent",
+    items: ["Google ADK 2.7", "Gemini 3.5 Flash", "Vertex AI", "8 tools"],
+  },
+  {
+    label: "Backend",
+    items: ["Python 3.14", "FastAPI", "psycopg 3", "PostgreSQL", "Redis", "uv"],
+  },
+  {
+    label: "Cloud",
+    items: [
+      "Cloud Run",
+      "Cloud SQL",
+      "Memorystore",
+      "Cloud Scheduler",
+      "Secret Manager",
+    ],
+  },
+  {
+    label: "Frontend",
+    items: ["Vanilla JS — no framework, no build step", "Camera API", "Web Speech API"],
+  },
+  {
+    label: "Ops",
+    items: ["Docker", "GitHub Actions", "pytest", "node --test", "Slack webhooks"],
+  },
+];
+
+const stories = [
+  {
+    title: "Durable sessions that shipped broken, behind a green deploy",
+    body: "ADK's in-memory session service keeps a conversation in one process's RAM. On Cloud Run — which scales to zero and out to four — that is not a session store, it is a way of losing conversations. So I wired up the Postgres-backed one: new dependencies, tested locally, deployed green. requirements.txt, which is what the Dockerfile actually installs, was never regenerated. Production silently fell back to in-memory. The fix was undone by packaging, and nothing looked broken.",
+    lesson: "There is now a packaging test, and /health names the session backend it settled on rather than claiming to be up.",
+  },
+  {
+    title: "A migration that was healthy and 404ing at the same time",
+    body: "I moved the deployed service off the AI Studio key onto Vertex AI. Env vars set, revision deployed, container healthy, /health reporting ok — and every model call returning 500. The location defaulted to us-central1, matching the region everything else deployed to. Vertex does not serve current Gemini models from regional endpoints: gemini-3.5-flash 404s there and 200s on global. What makes it quiet is that an older model is regionally available, so a deployment pinned to 2.5 works and upgrading the model breaks it with no code change to explain why.",
+    lesson: "Fixed by defaulting to global, with the probe table left in the comment so the next person to tidy it back to a region has to read the evidence first. The first probe reported 404 everywhere — a zsh history-expansion bug in my own diagnostic, not the API. Check the URL your script actually built before believing what it tells you about someone else's system.",
+  },
+  {
+    title: "Recall answered from the record of an absence",
+    body: "Asking “where are my keys?” returned the leave-scan row that had just established the keys were nowhere. The query searched the whole JSONB blob, so it matched the scan's own missing list — the agent reported a sighting at the exact moment of the item's absence.",
+    lesson: "The worst failure this system can have, found by using it. Regression-tested.",
+  },
+  {
+    title: "A wake word that disabled itself after an hour of working fine",
+    body: "Not the restart loop — the backoff was already right. The failure counter was a lifetime tally, cleared only on a wake match. The Web Speech API is server-based, so an occasional network error is normal weather; five of them spread across an hour of otherwise perfect listening tripped the give-up threshold, and the message arrived after nothing had failed for forty minutes.",
+    lesson: "Fixed by making the threshold mean consecutive failures. The two behavioural tests were run against the pre-fix file to confirm they fail on it — a test that has never failed hasn't been shown to test anything.",
+  },
+];
+
+const ogImage = new URL(
+  "/work/omnistant/hero.png",
+  Astro.site ?? Astro.url.origin,
+).href;
+---
+
+<Base
+  title="Omnistant — Case study — Adetoye Anointing"
+  description="An autonomous personal-context agent built solo in seven days on Google ADK and Gemini, deployed on Cloud Run. Its one rule: the model never sources a fact."
+  image={ogImage}
+>
+  <Nav />
+
+  <main class="max-w-2xl mx-auto px-4 py-8">
+    <header class="mt-12 mb-14">
+      <Prompt path="~/work" caret={false}>
+        <span class="text-fg">cat omnistant.md</span>
+      </Prompt>
+
+      <h1 class="mt-6 text-2xl leading-tight text-accent">Omnistant</h1>
+
+      <p class="mt-3 text-base leading-relaxed">
+        An agent that notices what you forgot — before you're gone.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        It watches a camera feed, keeps an append-only log of what it has seen
+        and where, and acts on that log without being asked. Built solo in seven
+        days for the #AllThingsAgentic hackathon, on Google ADK and Gemini 3.5
+        Flash, live on Cloud Run.
+      </p>
+
+      <div class="mt-6 flex flex-wrap gap-2">
+        {
+          ["Shipped · live", "Solo · 7 days", "Python · Gemini", "ADK · Cloud Run"].map(
+            (m) => (
+              <span class="text-[10px] uppercase tracking-widest text-muted border border-line px-2 py-0.5">
+                {m}
+              </span>
+            ),
+          )
+        }
+      </div>
+
+      <div class="mt-6 flex items-center flex-wrap gap-5 text-xs">
+        {
+          links.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-accent hover:opacity-80 transition-opacity"
+            >
+              {link.title} ↗
+            </a>
+          ))
+        }
+      </div>
+    </header>
+
+    <img
+      src="/work/omnistant/hero.png"
+      alt="Omnistant: “It notices what you forgot — before you're gone.” The app shows a notification reading “You headed to work about 2 minutes ago without your AirPods. Last seen: home, kitchen counter, 8:31 AM.”"
+      width="1440"
+      height="810"
+      loading="eager"
+      class="mb-16 w-full border border-line"
+    />
+
+    <div class="mb-16 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-6 border-y border-line py-6">
+      {
+        stats.map((stat) => (
+          <div>
+            <div class="text-lg text-fg leading-none">{stat.value}</div>
+            <div class="mt-2 text-[11px] text-muted leading-snug">
+              {stat.label}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <Section title="The problem">
+      <p class="text-sm leading-relaxed">
+        People with ADHD don't forget that they <em>own</em> things. They forget
+        what <em>happened</em> to them. The wallet isn't lost — the memory of
+        setting it down is.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        Every existing tool answers the wrong question. Reminder apps need you to
+        remember to set a reminder. Trackers only work on the things you
+        remembered to tag. Both require the exact faculty that isn't available at
+        the moment you need it.
+      </p>
+
+      <p class="mt-4 text-sm leading-relaxed">
+        So the agent has to be the one paying attention. <span class="text-fg"
+          >The user cannot be the trigger</span
+        > — that constraint is what forces every architectural decision downstream:
+        continuous observation, scheduled autonomy, and a memory that is a log rather
+        than a conversation.
+      </p>
+    </Section>
+
+    <Section title="The rule everything follows from">
+      <blockquote
+        class="border-l-2 border-accent pl-5 py-1 text-base leading-relaxed text-fg"
+      >
+        The model never sources a fact.
+      </blockquote>
+
+      <p class="mt-5 text-sm text-muted leading-relaxed">
+        Gemini does the seeing and the wording. Every claim the agent makes is
+        computed from rows in a table. This is what makes the failure mode
+        survivable: an agent that improvises <em
+          >“your AirPods are probably in the kitchen”</em
+        > is worse than useless to someone with ADHD — it sends them to the wrong
+        room with false confidence.
+      </p>
+    </Section>
+
+    <Section title="What it does">
+      <div class="space-y-7">
+        {
+          workflows.map((item, i) => (
+            <div class="flex gap-4">
+              <span class="text-xs text-accent pt-1 shrink-0 tabular-nums">
+                0{i + 1}
+              </span>
+              <div>
+                <h3 class="text-sm text-fg">{item.name}</h3>
+                <p class="mt-1.5 text-sm text-muted leading-relaxed">
+                  {item.body}
+                </p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </Section>
+
+    <Section title="The product">
+      <p class="text-sm text-muted leading-relaxed mb-8">
+        Four choices the model had no part in.
+      </p>
+
+      <div class="space-y-10">
+        {
+          gallery.map((shot) => (
+            <figure>
+              <img
+                src={shot.src}
+                alt={shot.alt}
+                width="1440"
+                height="960"
+                loading="lazy"
+                class="w-full border border-line"
+              />
+              <figcaption class="mt-3 text-xs text-muted leading-relaxed">
+                {shot.caption}
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </Section>
+
+    <Section title="Why it is an agent and not a chat box">
+      <div class="space-y-6">
+        {
+          autonomy.map((item) => (
+            <div class="border-l border-line pl-5">
+              <h3 class="text-sm text-fg">{item.name}</h3>
+              <p class="mt-1.5 text-sm text-muted leading-relaxed">
+                {item.body}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </Section>
+
+    <Section title="The honesty mechanism">
+      <p class="text-sm leading-relaxed">
+        A sighting is not a fact about the present. So confidence decays, and the
+        decay drives the phrasing — which is the entire point.
+      </p>
+
+      <pre
+        class="mt-5 overflow-x-auto border border-line p-4 text-[11px] leading-relaxed text-fg">confidence
+  × method_weight
+  × exp(-ln2 × age_hours / half_life)</pre>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        Method weights rank how the agent came to know: <span class="text-fg"
+          >visual</span
+        > 1.0, because the camera saw it · <span class="text-fg">voice</span> 0.85,
+        because you said so · <span class="text-fg">manual</span> 0.8 ·
+        <span class="text-fg">inferred</span> 0.55, because we guessed. The half-life
+        is six hours, so a camera sighting starts at 0.90 and is worth 0.06 a day
+        later.
+      </p>
+
+      <div class="mt-6 border-t border-line">
+        {
+          confidence.map(([score, label, says]) => (
+            <div class="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-4 py-3 border-b border-line">
+              <span class="text-xs text-muted w-24 shrink-0 tabular-nums">
+                {score}
+              </span>
+              <span class="text-[10px] uppercase tracking-widest text-accent w-20 shrink-0">
+                {label}
+              </span>
+              <span class="text-sm text-fg">{says}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <figure class="mt-8 lg:-mx-40">
+        <a href="/work/omnistant/behaviour.png" target="_blank" rel="noopener">
+          <img
+            src="/work/omnistant/behaviour.png"
+            alt="Diagram: how it behaves — one camera sighting decaying from 0.90 to 0.06 over a day with the phrasing at each step, a reminder that cancels itself when the item has been seen since, the routine-learning loop, and the frame-diff watch loop."
+            width="1440"
+            height="960"
+            loading="lazy"
+            class="w-full border border-line"
+          />
+        </a>
+        <figcaption class="mt-3 text-xs text-muted leading-relaxed">
+          The behaviour in one diagram — how sure it is and how that ages, the
+          reminder that cancels itself, what it learns from your own departures,
+          and why watching costs almost nothing.
+          <a
+            href="/work/omnistant/behaviour.png"
+            target="_blank"
+            rel="noopener"
+            class="text-accent hover:opacity-80 transition-opacity whitespace-nowrap"
+            >open full size ↗</a
+          >
+        </figcaption>
+      </figure>
+    </Section>
+
+    <Section title="Architecture">
+      <figure class="lg:-mx-40">
+        <a href="/work/omnistant/architecture.png" target="_blank" rel="noopener">
+        <img
+          src="/work/omnistant/architecture.png"
+          alt="Architecture diagram: three ways in — you ask by voice or text, the camera watches continuously, or Cloud Scheduler fires with nobody there. All three reach FastAPI on Cloud Run, then the ADK agent picks from 8 tools, which call deterministic workflows over Cloud SQL. Gemini does the seeing and the wording, never the deciding."
+          width="1440"
+          height="960"
+          loading="lazy"
+          class="w-full border border-line"
+        />
+        </a>
+        <figcaption class="mt-3 text-xs text-muted leading-relaxed">
+          Three ways in — you ask, it watches, or nobody is there at all. Note
+          where Gemini sits: it does the seeing and the wording, and never the
+          deciding.
+          <a
+            href="/work/omnistant/architecture.png"
+            target="_blank"
+            rel="noopener"
+            class="text-accent hover:opacity-80 transition-opacity whitespace-nowrap"
+            >open full size ↗</a
+          >
+        </figcaption>
+      </figure>
+
+      <p class="mt-5 text-sm leading-relaxed">
+        <span class="text-fg">Tools are the surface; workflows are the substance.</span
+        > A tool never decides what is missing — it calls a workflow that computes
+        it. That boundary is the reason the agent <em>cannot</em> hallucinate a sighting:
+        there is no code path where a model's opinion becomes a stored fact.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        State is split by durability requirement rather than by data type.
+        Postgres holds what must survive — observations, learned routines, leave
+        scans, due-dated nudges, and the ADK conversation sessions themselves.
+        Redis holds what is fine to lose: session state, camera frames, the
+        last-seen index, all on a TTL. Sessions live in Postgres specifically so
+        the service can run above one instance; on a platform that scales to
+        zero, nothing can wait in memory.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        Continuous watching is only affordable because most frames are never
+        sent. Each tick is compared client-side against the last frame actually
+        transmitted — a 32×24 greyscale luma fingerprint, mean per-pixel delta,
+        thresholded. A still desk costs zero API calls; only real movement earns
+        one.
+      </p>
+    </Section>
+
+    <Section title="When it breaks">
+      <p class="text-sm leading-relaxed mb-6">
+        <span class="text-fg"
+          >Degrade to something honest, never to something confident.</span
+        >
+      </p>
+
+      <div class="border-t border-line">
+        {
+          failures.map(([mode, behaviour]) => (
+            <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-5 py-3 border-b border-line">
+              <span class="text-xs text-accent w-40 shrink-0">{mode}</span>
+              <span class="text-sm text-muted leading-relaxed">{behaviour}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="mt-6 text-sm text-muted leading-relaxed">
+        Which produced the sharpest lesson of the build: graceful degradation is
+        correct, and it means a broken deploy looks healthy. Five bugs in seven
+        days failed silently for exactly that reason — I wrote all five up in
+        <a
+          href="/articles/your-fallbacks-are-hiding-your-bugs"
+          class="text-accent hover:opacity-80 transition-opacity"
+          >Your Fallbacks Are Hiding Your Bugs</a
+        >.
+      </p>
+    </Section>
+
+    <Section title="Four bugs worth the build">
+      <div class="space-y-9">
+        {
+          stories.map((story) => (
+            <div class="border-b border-line pb-8 last:border-b-0">
+              <h3 class="text-sm text-accent leading-relaxed">{story.title}</h3>
+              <p class="mt-2.5 text-sm text-muted leading-relaxed">
+                {story.body}
+              </p>
+              <p class="mt-3 text-sm leading-relaxed">{story.lesson}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="mt-8 text-sm leading-relaxed">
+        The generalisable fix runs through all of them:
+        <span class="text-fg"
+          >a health check must report which backend is live, not whether
+          something answered.</span
+        > Changing <code class="text-accent">/health</code> from “postgres: up” to
+        naming the session backend in use is what caught the next two.
+      </p>
+    </Section>
+
+    <Section title="Built with">
+      <div class="border-y border-line py-4">
+        {stack.map((row) => <CapabilityRow {...row} />)}
+      </div>
+
+      <p class="mt-6 text-sm text-muted leading-relaxed">
+        The test suite is hermetic — no database, no Redis, no API key, no
+        network. Credentials are blanked before config loads, so every model call
+        takes a deterministic stub path. That is why CI needs no secrets, and why
+        a red build is a real failure rather than a missing credential.
+      </p>
+    </Section>
+
+    <Section title="What I chose not to build">
+      <ul class="text-sm text-muted leading-relaxed space-y-3">
+        <li class="relative pl-5">
+          <span class="absolute left-0 text-accent">▸</span>
+          <span class="text-fg">No dark mode.</span> High contrast is fatiguing for
+          the target user. A decision, not an omission.
+        </li>
+        <li class="relative pl-5">
+          <span class="absolute left-0 text-accent">▸</span>
+          <span class="text-fg">Silence when nothing changed.</span> The watch loop
+          says nothing on an unchanged scene. Narrating a static world is the nagging
+          this replaces.
+        </li>
+        <li class="relative pl-5">
+          <span class="absolute left-0 text-accent">▸</span>
+          <span class="text-fg">Vision is not a tool Gemini can call.</span> It is
+          infrastructure a workflow uses — one module behind a single interface, with
+          two call sites, so the camera source is swappable later.
+        </li>
+      </ul>
+    </Section>
+
+    <Section title="The gap I did not close">
+      <p class="text-sm leading-relaxed">
+        The agent only knows you're leaving because you told it. If you walk out
+        without opening the app, nothing fires — which is the same forgetting the
+        product exists to fix.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        The browser cannot close that gap: no background geolocation, no
+        background execution, no geofence. No amount of backend work fixes it. So
+        the mitigation shipped as what it is — the pre-departure brief fires
+        around the learned departure time, and that is a decent guess, not a
+        trigger. The real fix is a native app, and it is the top item on the
+        roadmap, ahead of smart-glasses capture and a local wake-word engine.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        The rest, stated plainly: single-user with no real auth, no rate
+        limiting, <code class="text-accent">/health</code> reports Gemini as configured
+        rather than reachable, two pairs of AirPods are one subject, and the confidence
+        half-life is global at six hours when keys move constantly and a laptop doesn't.
+      </p>
+    </Section>
+
+    <Section title="Verify any of it">
+      <pre
+        class="overflow-x-auto border border-line p-4 text-[10px] sm:text-[11px] leading-relaxed text-muted"># 191 passed — no db, no network, no credentials
+<span class="text-fg">uv run pytest -q</span>
+
+# 23 passed — zero dependencies
+<span class="text-fg">node --test tests/js/*.test.js</span>
+
+# status ok, and which backend it settled on
+<span class="text-fg">curl {LIVE}/health</span></pre>
+    </Section>
+
+    <footer class="pt-8 border-t border-line flex items-center justify-between gap-4">
+      <Prompt path="~/work" caret={true}>
+        <span class="text-fg">
+          <a href="/#projects" class="hover:text-accent transition-colors">
+            cd ..
+          </a>
+        </span>
+      </Prompt>
+
+      <a
+        href={REPO}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-xs text-accent hover:opacity-80 transition-opacity"
+      >
+        source ↗
+      </a>
+    </footer>
+  </main>
+</Base>
