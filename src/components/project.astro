@@ -1,7 +1,20 @@
 ---
 import Section from "./Section.astro";
 import WorkCard from "./WorkCard.astro";
-import projects from "../data/projects.json";
+import projectData from "../data/projects.json";
+
+// The JSON entries are deliberately uneven — not every project has a repo, a
+// live URL or a case study — so the shape is declared here rather than inferred.
+type Project = {
+  name: string;
+  description: string;
+  url?: string;
+  caseStudy?: string;
+  meta?: string[];
+  links?: { label: string; url: string }[];
+};
+
+const projects = projectData as Project[];
 
 const hasProjects = projects.length > 0 && projects[0].name !== "";
 
@@ -34,7 +47,9 @@ const openSource = [
             name={project.name}
             description={project.description}
             url={project.url}
+            caseStudy={project.caseStudy}
             meta={project.meta}
+            links={project.links}
           />
         ))}
       </div>

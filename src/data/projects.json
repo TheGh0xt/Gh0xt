@@ -1,5 +1,15 @@
 [
   {
+    "name": "Omnistant",
+    "description": "An autonomous personal-context agent. It watches a camera feed, remembers where your things were last seen, and catches you at the door with what you're about to leave without. Google ADK and Gemini over an append-only Postgres log, live on Cloud Run — built solo in seven days on one rule: the model never sources a fact.",
+    "caseStudy": "/work/omnistant",
+    "links": [
+      { "label": "Live", "url": "https://omnistant-3oe5odab6a-uc.a.run.app" },
+      { "label": "Source", "url": "https://github.com/TheGh0xt/Omnistant" }
+    ],
+    "meta": ["Shipped · live", "Python · Gemini", "ADK · Cloud Run"]
+  },
+  {
     "name": "PMIE — Prediction Market Intelligence Engine",
     "description": "An agentic system for prediction markets. A Go MCP server exposes market data and tooling; a Python engine evaluates and orchestrates the agents acting on it.",
     "meta": ["In progress", "Go · Python", "MCP"]

@@ -20,6 +20,8 @@ It pulls me in because it isn't one discipline. It's distributed systems, protoc
 
 Right now that means **PMIE**, a prediction market intelligence engine — a Go MCP server exposing market data and tooling, paired with a Python engine that evaluates and orchestrates the agents acting on it. Alongside it, **Trippy**, an agentic application for international travel.
 
+The clearest statement of how I think this work should be built is [Omnistant](/work/omnistant) — an autonomous context agent I built solo in a week on Google ADK and Gemini, deployed on Cloud Run. Its one rule is that **the model never sources a fact**: Gemini does the seeing and the wording, and every claim the agent makes is computed by a deterministic workflow over an append-only log, with confidence that decays as a sighting ages. That constraint is the whole design — an agent that improvises a location is worse than one that admits it doesn't know.
+
 Before those, [MergeOracle](https://github.com/TheGh0xt/MergeOracle): a Go CLI that reads GitHub issue and PR threads, summarizes the conversation, and drafts a response with Gemini. It's finished and usable today.
 
 ### Where it came from
