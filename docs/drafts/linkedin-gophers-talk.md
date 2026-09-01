@@ -21,7 +21,7 @@ Three things worth carrying out of it:
 
 The demo is a Go MCP server for running a meetup — built for the meetup I was presenting at. Google ADK on the agent side, one real GitHub call, tests that drive the real protocol with no network. It's open source.
 
-Was it polished? No. The middle third is the part I'd rewrite first. But I built the demo, ran it live, and I'd do it again — so if your community wants this talk, it's ready.
+First time presenting to a technical audience. I built the demo, ran it live, and I'd do it again — so if your community wants this talk, it's ready.
 
 Slides, write-up and source → https://thegh0xt.vercel.app/speaking/production-ready-mcp-servers
 
