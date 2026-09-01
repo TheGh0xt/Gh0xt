@@ -1,0 +1,65 @@
+---
+export const prerender = true;
+
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/header/index.astro";
+import Section from "../../components/Section.astro";
+import WorkCard from "../../components/WorkCard.astro";
+import talkData from "../../data/talks.json";
+
+type Talk = {
+  title: string;
+  subtitle: string;
+  event: string;
+  date: string;
+  description: string;
+  page: string;
+  meta?: string[];
+  links?: { label: string; url: string }[];
+};
+
+// Newest first, so the list stays right without anyone maintaining an order.
+const talks = (talkData as Talk[]).sort((a, b) => b.date.localeCompare(a.date));
+---
+
+<Base
+  title="Speaking — Adetoye Anointing"
+  description="Conference and meetup talks on MCP servers, agentic systems, and the backend engineering underneath them."
+>
+  <Header />
+
+  <main class="max-w-2xl mx-auto px-4 py-8">
+    <header class="mb-12">
+      <h1 class="text-xl mb-3">Speaking</h1>
+      <p class="text-sm text-muted leading-relaxed">
+        Talks on agentic systems and the backend engineering they are actually
+        made of. Every one ships with a demo you can clone and run.
+      </p>
+    </header>
+
+    <Section title="Talks">
+      <div>
+        {
+          talks.map((talk) => (
+            <WorkCard
+              name={talk.title}
+              description={talk.description}
+              caseStudy={talk.page}
+              cta="talk page →"
+              meta={talk.meta}
+              links={talk.links}
+            />
+          ))
+        }
+      </div>
+
+      <p class="mt-8 text-sm text-muted leading-relaxed">
+        Available to speak on MCP, agent architecture and Go backend systems —
+        <a
+          href="/reach"
+          class="text-accent hover:opacity-80 transition-opacity">get in touch</a
+        >.
+      </p>
+    </Section>
+  </main>
+</Base>

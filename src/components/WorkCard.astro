@@ -4,6 +4,7 @@ interface Props {
   description: string;
   url?: string;
   caseStudy?: string;
+  cta?: string;
   meta?: string[];
   links?: { label: string; url: string }[];
 }
@@ -13,6 +14,7 @@ const {
   description,
   url,
   caseStudy,
+  cta = "case study →",
   meta = [],
   links = [],
 } = Astro.props;
@@ -55,7 +57,7 @@ const linkProps = !href
             ]}
             aria-hidden="true"
           >
-            {isExternal ? "↗" : "case study →"}
+            {isExternal ? "↗" : cta}
           </span>
         )
       }
