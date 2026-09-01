@@ -1,0 +1,21 @@
+[
+  {
+    "title": "Building Production-Ready MCP Servers for AI Applications and Agents",
+    "subtitle": "How Go and Google ADK reshape agentic system design",
+    "event": "Nigerian Gophers Meetup",
+    "date": "2026-08-22",
+    "description": "Tools, resources and prompts are three different cost and trust boundaries, not three names for the same thing. Built live against a Go MCP server for running a meetup — a concurrency-safe store, one real GitHub call, and a Google ADK agent scoped down to a read-only subset of its own toolset.",
+    "page": "/speaking/production-ready-mcp-servers",
+    "meta": ["Nigerian Gophers Meetup", "22 Aug 2026", "Go · MCP · ADK"],
+    "links": [
+      {
+        "label": "Slides",
+        "url": "https://docs.google.com/presentation/d/1W4cxOx8VksnLIIpNvH_zH-_Zy8Q49GL-rT-lnoZBBpo/edit"
+      },
+      {
+        "label": "Demo source",
+        "url": "https://github.com/TheGh0xt/meetup-ops-mcp"
+      }
+    ]
+  }
+]

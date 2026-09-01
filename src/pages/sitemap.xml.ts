@@ -11,6 +11,8 @@ const STATIC_PATHS = [
   "/articles",
   "/articles/technical",
   "/articles/non-technical",
+  "/speaking",
+  "/speaking/production-ready-mcp-servers",
   "/open-source-contributions",
   "/reach",
   "/work/omnistant",

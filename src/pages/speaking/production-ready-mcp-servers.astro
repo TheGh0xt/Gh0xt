@@ -1,0 +1,368 @@
+---
+export const prerender = true;
+
+import Base from "../../layouts/Base.astro";
+import Nav from "../../components/header/nav.astro";
+import Prompt from "../../components/Prompt.astro";
+import Section from "../../components/Section.astro";
+import talkData from "../../data/talks.json";
+
+const talk = talkData[0];
+
+const SLIDES = talk.links[0].url;
+const REPO = talk.links[1].url;
+
+const links = [
+  { title: "Slides", url: SLIDES },
+  { title: "Demo source", url: REPO },
+];
+
+// The three primitives, as the talk laid them out: what it is, what it costs.
+const primitives = [
+  {
+    name: "Tools",
+    kind: "verb",
+    example: "get_speaker(handle)",
+    body: "Actions the agent decides to invoke. The model reasons about whether to call one, then calls it.",
+    cost: "Side effects, plus latency and tokens on every call — and the set you expose is the set that client is allowed to do.",
+    metaphor: "Ordering the dish.",
+  },
+  {
+    name: "Resources",
+    kind: "noun",
+    example: "meetup://events/next",
+    body: "Context read by URI, with no “should I call this?” reasoning step in front of it.",
+    cost: "Cheap, cacheable context — a URI is a cache key, an action is not.",
+    metaphor: "The menu.",
+  },
+  {
+    name: "Prompts",
+    kind: "template",
+    example: "draft_rsvp_reminder",
+    body: "Parameterised prompts the server ships for its own domain, invoked explicitly rather than triggered.",
+    cost: "Domain phrasing owned by the server that owns the domain, instead of duplicated across every client.",
+    metaphor: "The waiter's recommended pairing.",
+  },
+];
+
+// One server, two grants. The struck-through tools are the whole argument.
+const TOOLSET = [
+  "get_speaker",
+  "list_events",
+  "rsvp",
+  "create_event",
+  "enrich_speaker_from_github",
+];
+
+const READ_ONLY = ["get_speaker", "list_events"];
+
+const agents = [
+  { name: "organizer_agent", scope: "full toolset", allowed: TOOLSET },
+  { name: "attendee_agent", scope: "read-only subset", allowed: READ_ONLY },
+];
+
+const ogImage = new URL(
+  "/speaking/gophers-nigeria-2026/desk.jpg",
+  Astro.site ?? Astro.url.origin,
+).href;
+---
+
+<Base
+  title="Building Production-Ready MCP Servers — Talk — Adetoye Anointing"
+  description="A talk given to the Nigerian Gophers Meetup on 22 August 2026: tools, resources and prompts are three different cost and trust boundaries, and a production MCP server is the backend engineering you already have."
+  image={ogImage}
+>
+  <Nav />
+
+  <main class="max-w-2xl mx-auto px-4 py-8">
+    <header class="mt-12 mb-14">
+      <Prompt path="~/speaking" caret={false}>
+        <span class="text-fg">cat gophers-nigeria-2026.md</span>
+      </Prompt>
+
+      <h1 class="mt-6 text-2xl leading-tight text-accent">
+        Building Production-Ready MCP Servers for AI Applications and Agents
+      </h1>
+
+      <p class="mt-3 text-base leading-relaxed">
+        How Go and Google ADK reshape agentic system design.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        My first talk — given to the Nigerian Gophers Meetup on 22 August 2026,
+        over Meet, to a room of experience software engineers. The demo was a Go MCP server
+        for running a meetup, built for the meetup it was being presented at.
+      </p>
+
+      <div class="mt-6 flex flex-wrap gap-2">
+        {
+          ["Nigerian Gophers Meetup", "22 Aug 2026", "Virtual", "Go · MCP · ADK"].map(
+            (m) => (
+              <span class="text-[10px] uppercase tracking-widest text-muted border border-line px-2 py-0.5">
+                {m}
+              </span>
+            ),
+          )
+        }
+      </div>
+
+      <div class="mt-6 flex items-center flex-wrap gap-5 text-xs">
+        {
+          links.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-accent hover:opacity-80 transition-opacity"
+            >
+              {link.title} ↗
+            </a>
+          ))
+        }
+      </div>
+    </header>
+
+    <figure class="mb-16">
+      <img
+        src="/speaking/gophers-nigeria-2026/desk.jpg"
+        alt="A desk lit purple: a monitor showing the meeting with someone else's slide up, and a laptop with my title slide — Building Production-Ready MCP Servers for AI Applications and Agents."
+        width="1600"
+        height="1295"
+        loading="eager"
+        class="w-full border border-line"
+      />
+      <figcaption class="mt-3 text-xs text-muted leading-relaxed">
+        Waiting to go on. My title slide is up on the laptop; someone else still
+        has the room.
+      </figcaption>
+    </figure>
+
+    <Section title="The argument">
+      <p class="text-sm leading-relaxed">
+        I believe plenty of people in that room had already shipped something agentic.
+        Some had done it in n8n — a webhook, an LLM node, an HTTP call, a Slack
+        message — and it worked, and it delivered real value. Put that beside a
+        Go service: a handler, an agent loop, an <code class="text-accent"
+          >http.Get</code
+        >, a store. Same picture.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        So the claim wasn't that anyone needed a new skill set. It was that the
+        skill set is already there and hasn't been pointed at this yet. Structs.
+        A map behind a mutex. An HTTP client that handles its own failure.
+        Service boundaries. Least privilege. That is most of what a
+        production-grade MCP server is made of — what changes is who calls it,
+        and how much you can trust the caller.
+      </p>
+
+      <p class="mt-4 text-sm leading-relaxed">
+        The demo was built against the event itself:
+        <span class="text-fg">Meetup Ops MCP</span>, an MCP server for running a
+        meetup. Speakers, events and RSVPs in Go maps behind a
+        <code class="text-accent">sync.RWMutex</code> — guarding them because an
+        agent may call several tools at once — plus one real external call, to
+        GitHub's public API, enriching a speaker from their handle.
+        Unauthenticated, 60 requests an hour, no key to configure. Which mattered:
+        it had to run live.
+      </p>
+    </Section>
+
+    <Section title="Tools, resources, prompts">
+      <p class="mb-8 text-sm leading-relaxed">
+        Most MCP examples show you tools and stop there. The protocol gives you
+        three primitives, and they are not three names for the same idea — they
+        are three different cost and trust boundaries.
+      </p>
+
+      <div class="mb-8 space-y-7">
+        {
+          primitives.map((p) => (
+            <div class="border-l border-line pl-5">
+              <div class="flex items-baseline flex-wrap gap-x-3 gap-y-1">
+                <h3 class="text-sm text-fg">{p.name}</h3>
+                <span class="text-[10px] uppercase tracking-widest text-accent">
+                  {p.kind}
+                </span>
+                <code class="text-xs text-muted">{p.example}</code>
+              </div>
+
+              <p class="mt-2 text-sm text-muted leading-relaxed">{p.body}</p>
+
+              <p class="mt-2 text-sm leading-relaxed">{p.cost}</p>
+
+              <p class="mt-2 text-xs text-muted italic">{p.metaphor}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="text-sm leading-relaxed">
+        The restaurant is how you remember it. The reason to keep them straight
+        is operational: <span class="text-fg"
+          >collapse all three into tools</span
+        > and every piece of context costs a reasoning step, every client reinvents
+        the same phrasing slightly differently, and the permission surface becomes
+        simply all of it — because nobody ever drew the line where the boundaries
+        already were.
+      </p>
+    </Section>
+
+    <Section title="stdio or streamableHTTP">
+      <p class="text-sm leading-relaxed">
+        <code class="text-accent">stdio</code> runs the server as a subprocess over
+        stdin and stdout: zero network config, one machine, one process tree. Good
+        for local development, CLI tools, single-binary deployments.
+        <code class="text-accent">streamableHTTP</code> makes it a real network service
+        — two processes with two lifecycles, reachable from anywhere, with server-sent
+        events for streaming back.
+      </p>
+
+      <blockquote
+        class="mt-5 border-l-2 border-accent pl-5 py-1 text-base leading-relaxed text-fg"
+      >
+        Will my agent and my tool server ever need to scale, deploy, or fail
+        independently?
+      </blockquote>
+
+      <p class="mt-5 text-sm text-muted leading-relaxed">
+        Yes — streamableHTTP from day one. No, one local tool for one user —
+        stdio is fine. And the opinion I'd defend in the Q&amp;A:
+        <span class="text-fg"
+          >test locally on the transport you intend to run in production.</span
+        > Developing against stdio and switching at deploy time is where the subtle
+        bugs hide, because buffering behaviour, connection lifecycle and error propagation
+        all differ between the two.
+      </p>
+
+      <p class="mt-4 text-sm leading-relaxed">
+        The payoff for getting it right is that the agent and the MCP server
+        become two ordinary services — different repos, different scaling
+        policies, different teams — and the contract between them is still just
+        MCP.
+      </p>
+    </Section>
+
+    <Section title="One server, many agents">
+      <p class="mb-8 text-sm leading-relaxed">
+        Same server, two agents, two grants — and the second one is built by
+        filtering the first, not by writing a second server.
+      </p>
+
+      <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-8 border-y border-line py-6">
+        {
+          agents.map((agent) => (
+            <div>
+              <div class="text-sm text-accent">{agent.name}</div>
+              <div class="mt-1 text-[10px] uppercase tracking-widest text-muted">
+                {agent.scope}
+              </div>
+
+              <ul class="mt-4 space-y-2">
+                {TOOLSET.map((tool) => {
+                  const granted = agent.allowed.includes(tool);
+                  return (
+                    <li
+                      class:list={[
+                        "text-xs leading-relaxed",
+                        granted ? "text-fg" : "text-muted/50 line-through",
+                      ]}
+                    >
+                      {tool}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="text-sm leading-relaxed">
+        <span class="text-fg">One MCP server, two blast radii.</span> Nothing about
+        the server changed — the attendee agent simply never sees the tools that
+        write.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        Least privilege applies to agents exactly as it applies to service
+        accounts and API keys. The toolset a client sees is the permission
+        surface; filtering it is how you grant.
+      </p>
+    </Section>
+
+    <Section title="The demo">
+      <p class="text-sm leading-relaxed">
+        <a
+          href={REPO}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-accent hover:opacity-80 transition-opacity">Meetup Ops MCP</a
+        > is the whole talk in a repo — the store, the one GitHub call, the MCP layer
+        of tools, resources and prompts, and two Google ADK agents built on top of
+        it, one scoped down.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        Dependencies are injected at the command binaries and nothing below
+        reaches for a global, which is what lets the tests drive the real
+        protocol against a fake GitHub with no network at all. There is also a
+        <code class="text-accent">probe</code> binary — a raw MCP client that walks
+        every tool, resource and prompt with no model in the loop. That is how you
+        find out whether the server is broken or the agent is just being creative.
+      </p>
+
+      <pre
+        class="mt-6 overflow-x-auto border border-line p-4 text-[10px] sm:text-[11px] leading-relaxed text-muted"># the whole thing, from nothing
+<span class="text-fg">git clone {REPO}</span>
+
+# full suite, race detector on — no network, no API key
+<span class="text-fg">make test</span>
+
+# streamable HTTP on :8080 — the production shape
+<span class="text-fg">make run-http</span></pre>
+    </Section>
+
+    <Section title="First time out">
+      <p class="text-sm leading-relaxed">
+        This was the first time I had presented to a technical audience, and it
+        was virtual — which removes the one signal you actually want, whether
+        the room is with you.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        I over-prepared the deck and under-prepared the talking, and it shows in
+        the middle third: the transport section is the part I would rewrite
+        first, because I explained the trade-off before I had made anyone care
+        that there was one. What I would keep is building the demo against the
+        event itself, so every abstraction had something concrete underneath it,
+        and running the live demo rather than hiding behind a recording of it.
+      </p>
+
+      <p class="mt-4 text-sm leading-relaxed">
+        Worth doing badly the first time. <span class="text-fg"
+          >Looking for the next one.</span
+        >
+      </p>
+    </Section>
+
+    <footer class="pt-8 border-t border-line flex items-center justify-between gap-4">
+      <Prompt path="~/speaking" caret={true}>
+        <span class="text-fg">
+          <a href="/speaking" class="hover:text-accent transition-colors">
+            cd ..
+          </a>
+        </span>
+      </Prompt>
+
+      <a
+        href={SLIDES}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-xs text-accent hover:opacity-80 transition-opacity"
+      >
+        slides ↗
+      </a>
+    </footer>
+  </main>
+</Base>
