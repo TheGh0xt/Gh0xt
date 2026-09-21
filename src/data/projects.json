@@ -10,9 +10,10 @@
     "meta": ["Shipped · live", "Python · Gemini", "ADK · Cloud Run"]
   },
   {
-    "name": "PMIE — Prediction Market Intelligence Engine",
-    "description": "An agentic system for prediction markets. A Go MCP server exposes market data and tooling; a Python engine evaluates and orchestrates the agents acting on it.",
-    "meta": ["In progress", "Go · Python", "MCP"]
+    "name": "VegaIntel",
+    "description": "A Prediction Market Intelligence Engine that explains why a Polymarket price moved, not just that it did. A Go MCP server exposes market data and a deterministic signal engine for whale, skew and volume activity; a Python ADK agent turns those signals into a cited explanation with a confidence score, then scores itself against the actual price 48 hours later.",
+    "links": [{ "label": "Live", "url": "https://vegaintel.vercel.app/" }],
+    "meta": ["Private beta", "Go · Python", "MCP · ADK"]
   },
   {
     "name": "Trippy",
