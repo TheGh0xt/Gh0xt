@@ -128,8 +128,8 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
         You answer a panel of AI interviewers out loud. Each has a voice, a
         role and a goal they won't tell you. Then a debrief shows how each of
         them heard you, points at your exact words, and gives you one thing
-        to fix. Built solo as the lead of a team of AI coding agents (Claude
-        Code), on a React prototype now, with a Go + Python backend designed
+        to fix. Built solo as the lead of a team of AI coding agents, on a
+        React prototype now, with a Go + Python backend designed
         contract-first for the stage after this one.
       </p>
 
@@ -227,6 +227,14 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
 
     <Section title="The rule everything follows from">
       <div class="border-t border-line">
+        <div class="flex flex-col sm:flex-row gap-1 sm:gap-6 py-3 border-b border-line">
+          <span class="text-[10px] uppercase tracking-widest text-accent sm:w-1/2">
+            Sirius always →
+          </span>
+          <span class="text-[10px] uppercase tracking-widest text-muted sm:w-1/2">
+            Sirius never →
+          </span>
+        </div>
         {
           principles.map(([does, never]) => (
             <div class="flex flex-col sm:flex-row gap-1 sm:gap-6 py-3 border-b border-line">
@@ -236,9 +244,6 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
           ))
         }
       </div>
-      <p class="mt-3 text-[10px] uppercase tracking-widest text-muted">
-        Sirius always → · Sirius never →
-      </p>
 
       <p class="mt-8 text-sm text-fg">Real examples of these rules biting during the build:</p>
       <ul class="mt-4 text-sm text-muted leading-relaxed space-y-3">
