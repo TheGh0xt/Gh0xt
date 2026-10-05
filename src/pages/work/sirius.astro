@@ -1,0 +1,501 @@
+---
+export const prerender = true;
+
+import Base from "../../layouts/Base.astro";
+import Nav from "../../components/header/nav.astro";
+import Prompt from "../../components/Prompt.astro";
+import Section from "../../components/Section.astro";
+import CapabilityRow from "../../components/CapabilityRow.astro";
+
+const LIVE = "https://sirius.outposthq.workers.dev/";
+const WAITLIST = "https://tally.so/r/rjzXoN";
+
+const links = [
+  { title: "Live demo", url: LIVE },
+  { title: "Waitlist", url: WAITLIST },
+];
+
+// Verified against the repositories and the engineering logs on 2026-10-05.
+const stats = [
+  { value: "S0", label: "stage — clickable prototype, invented data" },
+  { value: "380", label: "unit tests: lint, types, build, bundle budget, privacy check" },
+  { value: "115+", label: "Playwright e2e tests, at 1440 / 390 / 360 px" },
+  { value: "275", label: "contract tests in the backend monorepo" },
+  { value: "25", label: "merged PRs across both repos so far" },
+  { value: "0", label: "provider keys or model hosts in the web bundle" },
+];
+
+const principles = [
+  ["Trains you.", "Feeds answers during a real interview."],
+  ["Shows the evidence for every score it displays", "Shows a score it can't point to in your transcript"],
+  ["Measures what it can observe: pace, pauses, fillers, hedges, who spoke when", "Guesses your emotion or confidence from your voice or face"],
+  ["Measures tempo", "Scores your accent, or treats speech-recognition confidence as “clarity”"],
+  ["Gives one thing to fix", "Gives a list of ten failures, a leaderboard or a streak"],
+  ["Tells you the rule and why it exists, then lets you decide", "“Corrects” neurodivergent people toward neurotypical norms"],
+  ["Keeps your record as your history", "Acts as a hiring credential — a learner shares a session by choice, and revokes it"],
+];
+
+const ruleExamples = [
+  "The design showed “Hedges: 0” in the calm part of a session. A zero count has no moment to point at, so the debrief shows a dash instead.",
+  "A filler word on your list that you never said reads “not heard”, never “0”.",
+  "The design counted “rising ends” — a voice pattern — as hedging. Dropped: it infers confidence from the voice and varies with accent, so it broke two rules at once.",
+  "The design's demo said 78% talk balance. Recomputed from the example's own turn timings, it came to 87%, and the code was corrected to the honest number.",
+];
+
+const journey = [
+  {
+    step: "01",
+    name: "Landing",
+    body: "The pitch, how it works, the panel, pricing, FAQ, waitlist.",
+    src: "/work/sirius/hero.png",
+    alt: "Sirius landing page: “Rehearse it out loud before it counts.” beside a live demo session showing a three-person panel, a mid-interview interruption, and a debrief snippet reading “Solid until I pushed. Then they hedged about their own work.”",
+  },
+  {
+    step: "02",
+    name: "Pricing",
+    body: "Sold as sessions, metered as minutes. Annual plans release sessions monthly rather than all at once — for many Nigerian users the real barrier is a large one-off dollar charge, not the sticker price.",
+    src: "/work/sirius/pricing.png",
+    alt: "Pricing section: Free, Single session (₦8,000), Pro (₦16,000/mo) and Advanced (₦40,000/mo, Recommended), with a monthly/annual and naira/dollar toggle.",
+  },
+  {
+    step: "03",
+    name: "Set-up",
+    body: "Situation, company and role, optional context (a job description, kept in memory and never uploaded), Rehearsal or Real mode, panel size, and an invite for a real human — a panelist, a coach, or an observer. The panel's goals stay hidden until the debrief.",
+    src: "/work/sirius/setup.png",
+    alt: "Set-up screen: situation set to Behavioral interview at Lumon Industries for a Backend engineer role, a job description attached, Rehearsal mode, a 3:1 panel, and a coach invited by link — with the panel listed on the right, goals hidden.",
+  },
+  {
+    step: "04",
+    name: "The room",
+    body: "Persona tiles with speaking rings, live captions, a transcript/notes/people panel, and a panelist cutting in mid-answer. Here Tom Hale interrupts at 00:46 — “Sorry, let me stop you...” — with a toast coaching you through it: “Tom cut in. Take a breath, then answer.” Ada Okafor sits in as the invited coach, who can pause the room at any point.",
+    src: "/work/sirius/room.png",
+    alt: "The room mid-interruption: Tom Hale's tile outlined red and labelled “Cut in”, his line “Sorry, let me stop you. You” cut off in the transcript after Ngozi Eze asks “Tell me about a time you owned something that went wrong”, a toast reading “Tom cut in. Take a breath, then answer”, and Ada Okafor present as the invited coach.",
+  },
+  {
+    step: "05",
+    name: "Intent",
+    body: "One line, up to 140 characters, sealed before any feedback. The panel never sees it — it's there to compare against how you were heard.",
+    src: "/work/sirius/intent.png",
+    alt: "Intent screen: “In one line, what were you trying to get across?” with a text box reading “Show that I led the payments migration and fixed what broke”, capped at 140 characters, with a Skip option.",
+  },
+  {
+    step: "06",
+    name: "The debrief",
+    body: "Each panelist's read beside your intent, their hidden goal now revealed, one thing to fix, calm-versus-under-pressure measures, and the filler list. Every number opens the exact moment in the transcript it came from.",
+    src: "/work/sirius/debrief.png",
+    alt: "Debrief screen: three panelist cards reading the session differently (Unsure, Lost, Won), “One thing to fix next: Say ‘I’ when it was you” with “we” × 6 and a cut-in moment as evidence, calm-vs-pressure pace and pause numbers, and a filler list.",
+  },
+];
+
+const architectureParts = [
+  ["Mirzam", "the herald", "Go. Accounts, plans, Paystack, rooms, invites, roles, cohorts, records, reports. Never calls a model, never touches audio."],
+  ["Adhara", "the brain", "Python. The room agent (a Director plus every persona's voice), the analysis and grading worker. Never takes payments, never decides permissions."],
+  ["Sirius", "what people see", "React. The web app. Never holds provider keys, never calls a model, never computes a score, never talks to Adhara directly."],
+];
+
+const gradingRules = [
+  "Every grading is versioned: scenario, rubric, grader model, prompt.",
+  "Transcripts are immutable; scores are derived and disposable, so a regrade adds a row rather than overwriting one.",
+  "Graders see derived features, never raw user text.",
+  "An eval suite measures grader agreement, the noise band, accent fairness and injection resistance.",
+  "Every model call goes through a cost meter with a per-session budget.",
+];
+
+const lessons = [
+  {
+    title: "The plan disagreed with itself 16 times",
+    body: "Before any code, the PRD was checked against two weeks of planning docs and found 16 contradictions between them.",
+    lesson: "Rule adopted: one document owns the “what”; the history of “why” is kept, but facts get updated everywhere. A human engineer who spots a contradiction asks; an agent picks one and keeps going.",
+  },
+  {
+    title: "“Passing tests” isn't “matching the design”",
+    body: "The first prototype passed every automated check — and still shipped with fonts in the wrong face, headings wrapping badly, text clipped, and two set-up steps missing.",
+    lesson: "Every UI task now needs side-by-side screenshots of the design against the build, at laptop and phone widths, with any deliberate difference listed and justified. The reviewer treats an unlisted difference as a bug.",
+  },
+  {
+    title: "A test that escaped its sandbox",
+    body: "A self-test meant to run in a temporary folder inherited git's environment from a pre-push hook and overwrote the workspace's own agent configuration. Caught, reported and repaired within minutes.",
+    lesson: "The fix went to the root: the hook now clears git's environment before running anything, and every git-calling test runs scrubbed — proved by re-running the exact hook conditions in a throwaway clone.",
+  },
+];
+
+const stageGates = [
+  ["S0 Prototype", "now", "Clickable prototype on invented data", "10 of 15 people point at the debrief, unprompted, as the useful part"],
+  ["S1 Alpha", "next", "One scenario with real voice, real grading, real storage, an eval harness and a cost meter", "Noise band measured; 19 of 20 spot checks land on the right evidence"],
+  ["S2 Pilot (MVP)", "later", "Individuals can pay; one programme runs a free cohort", "100 paid sessions from strangers; 25% buy again within 30 days"],
+];
+
+const agentTeam = [
+  "Roles with written file ownership: a contracts steward, a platform (Go) engineer, an intelligence (Python) engineer, an eval guardian, web engineers, and a read-only reviewer. Two agents never edit the same file, each in its own git worktree, one branch per task.",
+  "Every task has an ID and a “Done when” line you can check. Built test-first, lands as a PR with a rollback plan. A reviewer agent checks it against the requirement and the non-negotiables. The founder merges; agents never merge.",
+  "Contracts land first, alone, before anyone builds on them.",
+  "Four logs the founder learns from: an engineering log, a mistakes log that's never deleted, dated decision records, and a progress page — plus a ledger and recovery runbook so the team can pause at usage limits and resume exactly where it stopped.",
+];
+
+const stack = [
+  { label: "Web", items: ["React 19", "TypeScript", "Vite", "Ajv (JSON Schema 2020-12)"] },
+  { label: "Type", items: ["Onest — UI", "Young Serif — spoken lines", "JetBrains Mono — numbers", "Bagel Fat One — headlines"] },
+  { label: "Hosting", items: ["Cloudflare Workers static assets", "per-PR preview URLs behind Cloudflare Access"] },
+  { label: "Planned", items: ["Go (Mirzam)", "Python (Adhara)", "LiveKit", "Postgres + pgvector", "Paystack"] },
+  { label: "Quality", items: ["pnpm verify", "Playwright", "sha256-pinned contracts", "design-token check", "privacy-tag check"] },
+];
+
+const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
+  .href;
+---
+
+<Base
+  title="Sirius — Case study — Adetoye Anointing"
+  description="A rehearsal room for the conversations that decide careers — a panel of AI interviewers with hidden goals, and a debrief where every score opens the exact words it came from. S0 prototype, built as the lead of a team of AI coding agents."
+  image={ogImage}
+>
+  <Nav />
+
+  <main class="max-w-2xl mx-auto px-4 py-8">
+    <header class="mt-12 mb-14">
+      <Prompt path="~/work" caret={false}>
+        <span class="text-fg">cat sirius.md</span>
+      </Prompt>
+
+      <h1 class="mt-6 text-2xl leading-tight text-accent">Sirius</h1>
+
+      <p class="mt-3 text-base leading-relaxed">
+        A rehearsal room for the conversations that decide careers.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        You answer a panel of AI interviewers out loud. Each has a voice, a
+        role and a goal they won't tell you. Then a debrief shows how each of
+        them heard you, points at your exact words, and gives you one thing
+        to fix. Built solo as the lead of a team of AI coding agents (Claude
+        Code), on a React prototype now, with a Go + Python backend designed
+        contract-first for the stage after this one.
+      </p>
+
+      <div class="mt-6 flex flex-wrap gap-2">
+        {
+          [
+            "Prototype · S0",
+            "TypeScript · React",
+            "Go · Python (planned)",
+            "Contract-first",
+            "Agent team",
+          ].map((m) => (
+            <span class="text-[10px] uppercase tracking-widest text-muted border border-line px-2 py-0.5">
+              {m}
+            </span>
+          ))
+        }
+      </div>
+
+      <div class="mt-6 flex items-center flex-wrap gap-5 text-xs">
+        {
+          links.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-accent hover:opacity-80 transition-opacity"
+            >
+              {link.title} ↗
+            </a>
+          ))
+        }
+      </div>
+    </header>
+
+    <img
+      src="/work/sirius/hero.png"
+      alt="Sirius landing page: “Rehearse it out loud before it counts.” beside a live demo session showing a three-person panel, a mid-interview interruption, and a debrief snippet reading “Solid until I pushed. Then they hedged about their own work.”"
+      width="1577"
+      height="1193"
+      loading="eager"
+      class="mb-16 w-full border border-line"
+    />
+
+    <div class="mb-16 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-6 border-y border-line py-6">
+      {
+        stats.map((stat) => (
+          <div>
+            <div class="text-lg text-fg leading-none">{stat.value}</div>
+            <div class="mt-2 text-[11px] text-muted leading-snug">
+              {stat.label}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <Section title="The problem">
+      <p class="text-sm leading-relaxed">
+        Hiring loops and promotion panels reward communication rules nobody
+        writes down. Engineers grind coding practice for months and still
+        fail the behavioral round — not for lack of substance, but because
+        they never learned the unwritten rules, and never practised them
+        under real pressure. The gap is widest for neurodivergent people and
+        for anyone interviewing across cultures: a Lagos engineer facing a
+        foreign panel that has never heard their accent.
+      </p>
+
+      <blockquote class="mt-6 border-l-2 border-accent pl-5 py-1 text-sm leading-relaxed text-muted italic">
+        Asked “Are you interviewing anywhere else?”, I wanted to be honest
+        and I was anxious, so I said “No, I really like this company.” Later
+        I learned the conventional answer is closer to “I'm exploring a few
+        opportunities, but this role is my priority.” I didn't lack
+        substance. I lacked the unwritten rule, and nerves took away my
+        ability to edit myself in the moment.
+      </blockquote>
+    </Section>
+
+    <Section title="The insight that shapes everything">
+      <p class="text-sm leading-relaxed">
+        <span class="text-fg">What you meant → what you said → how they heard it → what happened next.</span>
+        Sirius works on the gaps between those steps. It never teaches “the
+        correct sentence” — it shows how a particular audience is likely to
+        hear you, and you decide what to change. A good answer to “tell me
+        about yourself” is different for a startup founder, a Big Tech
+        engineering manager and a Lagos recruiter.
+      </p>
+
+      <p class="mt-4 text-sm text-muted leading-relaxed">
+        The hard problem isn't orchestrating AI agents. It's making a score
+        you can trust. Most of the architecture exists to answer one
+        question: why should I believe this number?
+      </p>
+    </Section>
+
+    <Section title="The rule everything follows from">
+      <div class="border-t border-line">
+        {
+          principles.map(([does, never]) => (
+            <div class="flex flex-col sm:flex-row gap-1 sm:gap-6 py-3 border-b border-line">
+              <span class="text-sm text-fg sm:w-1/2 leading-relaxed">{does}</span>
+              <span class="text-sm text-muted sm:w-1/2 leading-relaxed">{never}</span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-3 text-[10px] uppercase tracking-widest text-muted">
+        Sirius always → · Sirius never →
+      </p>
+
+      <p class="mt-8 text-sm text-fg">Real examples of these rules biting during the build:</p>
+      <ul class="mt-4 text-sm text-muted leading-relaxed space-y-3">
+        {
+          ruleExamples.map((item) => (
+            <li class="relative pl-5">
+              <span class="absolute left-0 text-accent">▸</span>
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <Section title="The demo, walked through">
+      <p class="text-sm text-muted leading-relaxed mb-8">
+        Everything below runs on scripted, invented data — labelled “Demo,
+        invented data” on every screen. The fictional company is “Lumon
+        Industries”, a small nod to <em>Severance</em>; the personas (Ngozi
+        Eze, Tom Hale, Amara Obi, and coach Ada Okafor) are invented too.
+      </p>
+
+      <div class="space-y-10">
+        {
+          journey.map((step) => (
+            <div>
+              <div class="flex items-baseline gap-3 mb-3">
+                <span class="text-xs text-accent tabular-nums shrink-0">{step.step}</span>
+                <h3 class="text-sm text-fg">{step.name}</h3>
+              </div>
+              <p class="text-sm text-muted leading-relaxed mb-4">{step.body}</p>
+              {step.src && (
+                <img
+                  src={step.src}
+                  alt={step.alt}
+                  loading="lazy"
+                  class="w-full border border-line"
+                />
+              )}
+              {!step.src && (
+                <div class="w-full border border-dashed border-line py-12 text-center text-xs text-muted uppercase tracking-widest">
+                  Screenshot coming
+                </div>
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </Section>
+
+    <Section title="Architecture: three parts, joined only by contracts">
+      <p class="text-sm leading-relaxed">
+        Star names, from the constellation Canis Major. Sirius is the
+        brightest star — the part people see.
+      </p>
+
+      <div class="mt-6 space-y-5">
+        {
+          architectureParts.map(([name, meaning, body]) => (
+            <div class="border-l border-line pl-5">
+              <h3 class="text-sm text-fg">
+                {name} <span class="text-muted font-normal">— {meaning}</span>
+              </h3>
+              <p class="mt-1.5 text-sm text-muted leading-relaxed">{body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <pre
+        class="mt-6 overflow-x-auto border border-line p-4 text-[10px] sm:text-[11px] leading-relaxed text-fg">Browser (sirius-web, React)
+   │  OpenAPI client ──▶ Mirzam (Go): accounts, plans, payments, rooms,
+   │                      invites, roles, cohorts, records, reports
+   │  WebRTC audio (token from Mirzam)
+   ▼
+LiveKit room ◀── joins as agent ── Adhara (Python): room agent
+                                    (Director + persona voices),
+                                    analysis and grading worker
+             Postgres + pgvector — one database, table ownership per service</pre>
+
+      <p class="mt-5 text-sm leading-relaxed">
+        <span class="text-fg">The room agent runs one process</span> — a
+        Director deciding who speaks next, when to interrupt, when to wrap
+        up — and voices every persona, switching voice per persona.
+        Cascaded speech (speech-to-text, then the model, then
+        text-to-speech) buys accent-capable recognition, a distinct voice
+        per persona, and word timestamps. The Director is a plain state
+        machine saved to Postgres every turn, so a session survives a
+        reconnect.
+      </p>
+
+      <h3 class="mt-8 text-sm text-fg">Grading that can be trusted</h3>
+      <ul class="mt-3 text-sm text-muted leading-relaxed space-y-2">
+        {
+          gradingRules.map((item) => (
+            <li class="relative pl-5">
+              <span class="absolute left-0 text-accent">▸</span>
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-5 text-sm text-muted leading-relaxed">
+        Built for the Nigeria Data Protection Act: deletion really deletes
+        and export works. Every contract field carries a privacy tag
+        (learner-only or aggregate-safe), and a test fails if one is
+        missing.
+      </p>
+    </Section>
+
+    <Section title="Built with a team of AI coding agents">
+      <p class="text-sm leading-relaxed mb-6">
+        Anointing builds Sirius as the lead of a team of AI coding agents
+        (Claude Code agent teams) — the most distinctive part of the
+        process, and the strongest source of honest lessons.
+      </p>
+
+      <ul class="text-sm text-muted leading-relaxed space-y-4">
+        {
+          agentTeam.map((item) => (
+            <li class="relative pl-5">
+              <span class="absolute left-0 text-accent">▸</span>
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+    </Section>
+
+    <Section title="Honest lessons from the build">
+      <div class="space-y-9">
+        {
+          lessons.map((story) => (
+            <div class="border-b border-line pb-8 last:border-b-0">
+              <h3 class="text-sm text-accent leading-relaxed">{story.title}</h3>
+              <p class="mt-2.5 text-sm text-muted leading-relaxed">{story.body}</p>
+              <p class="mt-3 text-sm leading-relaxed">{story.lesson}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Section>
+
+    <Section title="How success is measured">
+      <p class="text-sm text-muted leading-relaxed mb-6">
+        Each stage has a number to hit before the next one starts.
+      </p>
+
+      <div class="border-t border-line">
+        {
+          stageGates.map(([stage, when, what, gate]) => (
+            <div class="py-4 border-b border-line">
+              <div class="flex items-baseline gap-3">
+                <span class="text-sm text-fg">{stage}</span>
+                <span class="text-[10px] uppercase tracking-widest text-accent">{when}</span>
+              </div>
+              <p class="mt-1.5 text-sm text-muted leading-relaxed">{what}</p>
+              <p class="mt-1.5 text-sm leading-relaxed">{gate}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Section>
+
+    <Section title="Built with">
+      <div class="border-y border-line py-4">
+        {stack.map((row) => <CapabilityRow {...row} />)}
+      </div>
+    </Section>
+
+    <Section title="What's real, and what isn't yet">
+      <ul class="text-sm text-muted leading-relaxed space-y-3">
+        <li class="relative pl-5">
+          <span class="absolute left-0 text-accent">▸</span>
+          <span class="text-fg">The web app is real.</span> A genuine React
+          foundation, not throwaway mockups — the intelligence layer and the
+          platform plug in later through ports, without the screens changing.
+        </li>
+        <li class="relative pl-5">
+          <span class="absolute left-0 text-accent">▸</span>
+          <span class="text-fg">The panel in the demo is scripted,</span> not
+          live AI. Real voices and speech recognition, real grading,
+          accounts, payments and the backend services (Mirzam, Adhara) are
+          designed and contracted, not built — that starts at S1.
+        </li>
+        <li class="relative pl-5">
+          <span class="absolute left-0 text-accent">▸</span>
+          <span class="text-fg">No outcome claims.</span> Sirius doesn't
+          claim to improve interview outcomes. That's what the stage gates
+          above will measure, not what the prototype asserts.
+        </li>
+        <li class="relative pl-5">
+          <span class="absolute left-0 text-accent">▸</span>
+          It's a trainer, not a hiring or assessment tool — programmes see
+          aggregates only, and a learner shares one session by choice,
+          revocable.
+        </li>
+      </ul>
+    </Section>
+
+    <footer class="pt-8 border-t border-line flex items-center justify-between gap-4">
+      <Prompt path="~/work" caret={true}>
+        <span class="text-fg">
+          <a href="/#projects" class="hover:text-accent transition-colors">
+            cd ..
+          </a>
+        </span>
+      </Prompt>
+
+      <a
+        href={WAITLIST}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-xs text-accent hover:opacity-80 transition-opacity"
+      >
+        waitlist ↗
+      </a>
+    </footer>
+  </main>
+</Base>
