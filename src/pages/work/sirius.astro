@@ -87,57 +87,18 @@ const journey = [
   },
 ];
 
-const architectureParts = [
-  ["Mirzam", "the herald", "Go. Accounts, plans, Paystack, rooms, invites, roles, cohorts, records, reports. Never calls a model, never touches audio."],
-  ["Adhara", "the brain", "Python. The room agent (a Director plus every persona's voice), the analysis and grading worker. Never takes payments, never decides permissions."],
-  ["Sirius", "what people see", "React. The web app. Never holds provider keys, never calls a model, never computes a score, never talks to Adhara directly."],
-];
-
-const gradingRules = [
-  "Every grading is versioned: scenario, rubric, grader model, prompt.",
-  "Transcripts are immutable; scores are derived and disposable, so a regrade adds a row rather than overwriting one.",
-  "Graders see derived features, never raw user text.",
-  "An eval suite measures grader agreement, the noise band, accent fairness and injection resistance.",
-  "Every model call goes through a cost meter with a per-session budget.",
-];
-
-const lessons = [
-  {
-    title: "The plan disagreed with itself 16 times",
-    body: "Before any code, the PRD was checked against two weeks of planning docs and found 16 contradictions between them.",
-    lesson: "Rule adopted: one document owns the “what”; the history of “why” is kept, but facts get updated everywhere. A human engineer who spots a contradiction asks; an agent picks one and keeps going.",
-  },
-  {
-    title: "“Passing tests” isn't “matching the design”",
-    body: "The first prototype passed every automated check — and still shipped with fonts in the wrong face, headings wrapping badly, text clipped, and two set-up steps missing.",
-    lesson: "Every UI task now needs side-by-side screenshots of the design against the build, at laptop and phone widths, with any deliberate difference listed and justified. The reviewer treats an unlisted difference as a bug.",
-  },
-  {
-    title: "A test that escaped its sandbox",
-    body: "A self-test meant to run in a temporary folder inherited git's environment from a pre-push hook and overwrote the workspace's own agent configuration. Caught, reported and repaired within minutes.",
-    lesson: "The fix went to the root: the hook now clears git's environment before running anything, and every git-calling test runs scrubbed — proved by re-running the exact hook conditions in a throwaway clone.",
-  },
-];
-
 const stageGates = [
   ["S0 Prototype", "now", "Clickable prototype on invented data", "10 of 15 people point at the debrief, unprompted, as the useful part"],
   ["S1 Alpha", "next", "One scenario with real voice, real grading, real storage, an eval harness and a cost meter", "Noise band measured; 19 of 20 spot checks land on the right evidence"],
   ["S2 Pilot (MVP)", "later", "Individuals can pay; one programme runs a free cohort", "100 paid sessions from strangers; 25% buy again within 30 days"],
 ];
 
-const agentTeam = [
-  "Roles with written file ownership: a contracts steward, a platform (Go) engineer, an intelligence (Python) engineer, an eval guardian, web engineers, and a read-only reviewer. Two agents never edit the same file, each in its own git worktree, one branch per task.",
-  "Every task has an ID and a “Done when” line you can check. Built test-first, lands as a PR with a rollback plan. A reviewer agent checks it against the requirement and the non-negotiables. The founder merges; agents never merge.",
-  "Contracts land first, alone, before anyone builds on them.",
-  "Four logs the founder learns from: an engineering log, a mistakes log that's never deleted, dated decision records, and a progress page — plus a ledger and recovery runbook so the team can pause at usage limits and resume exactly where it stopped.",
-];
-
 const stack = [
-  { label: "Web", items: ["React 19", "TypeScript", "Vite", "Ajv (JSON Schema 2020-12)"] },
+  { label: "Web", items: ["React 19", "TypeScript", "Vite"] },
   { label: "Type", items: ["Onest — UI", "Young Serif — spoken lines", "JetBrains Mono — numbers", "Bagel Fat One — headlines"] },
   { label: "Hosting", items: ["Cloudflare Workers static assets", "per-PR preview URLs behind Cloudflare Access"] },
-  { label: "Planned", items: ["Go (Mirzam)", "Python (Adhara)", "LiveKit", "Postgres + pgvector", "Paystack"] },
-  { label: "Quality", items: ["pnpm verify", "Playwright", "sha256-pinned contracts", "design-token check", "privacy-tag check"] },
+  { label: "Planned", items: ["Go · Python backend", "Paystack"] },
+  { label: "Quality", items: ["pnpm verify", "Playwright", "design-token check"] },
 ];
 
 const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
@@ -328,100 +289,6 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
       </div>
     </Section>
 
-    <Section title="Architecture: three parts, joined only by contracts">
-      <p class="text-sm leading-relaxed">
-        Star names, from the constellation Canis Major. Sirius is the
-        brightest star — the part people see.
-      </p>
-
-      <div class="mt-6 space-y-5">
-        {
-          architectureParts.map(([name, meaning, body]) => (
-            <div class="border-l border-line pl-5">
-              <h3 class="text-sm text-fg">
-                {name} <span class="text-muted font-normal">— {meaning}</span>
-              </h3>
-              <p class="mt-1.5 text-sm text-muted leading-relaxed">{body}</p>
-            </div>
-          ))
-        }
-      </div>
-
-      <pre
-        class="mt-6 overflow-x-auto border border-line p-4 text-[10px] sm:text-[11px] leading-relaxed text-fg">Browser (sirius-web, React)
-   │  OpenAPI client ──▶ Mirzam (Go): accounts, plans, payments, rooms,
-   │                      invites, roles, cohorts, records, reports
-   │  WebRTC audio (token from Mirzam)
-   ▼
-LiveKit room ◀── joins as agent ── Adhara (Python): room agent
-                                    (Director + persona voices),
-                                    analysis and grading worker
-             Postgres + pgvector — one database, table ownership per service</pre>
-
-      <p class="mt-5 text-sm leading-relaxed">
-        <span class="text-fg">The room agent runs one process</span> — a
-        Director deciding who speaks next, when to interrupt, when to wrap
-        up — and voices every persona, switching voice per persona.
-        Cascaded speech (speech-to-text, then the model, then
-        text-to-speech) buys accent-capable recognition, a distinct voice
-        per persona, and word timestamps. The Director is a plain state
-        machine saved to Postgres every turn, so a session survives a
-        reconnect.
-      </p>
-
-      <h3 class="mt-8 text-sm text-fg">Grading that can be trusted</h3>
-      <ul class="mt-3 text-sm text-muted leading-relaxed space-y-2">
-        {
-          gradingRules.map((item) => (
-            <li class="relative pl-5">
-              <span class="absolute left-0 text-accent">▸</span>
-              {item}
-            </li>
-          ))
-        }
-      </ul>
-
-      <p class="mt-5 text-sm text-muted leading-relaxed">
-        Built for the Nigeria Data Protection Act: deletion really deletes
-        and export works. Every contract field carries a privacy tag
-        (learner-only or aggregate-safe), and a test fails if one is
-        missing.
-      </p>
-    </Section>
-
-    <Section title="Built with a team of AI coding agents">
-      <p class="text-sm leading-relaxed mb-6">
-        Anointing builds Sirius as the lead of a team of AI coding agents
-        (Claude Code agent teams) — the most distinctive part of the
-        process, and the strongest source of honest lessons.
-      </p>
-
-      <ul class="text-sm text-muted leading-relaxed space-y-4">
-        {
-          agentTeam.map((item) => (
-            <li class="relative pl-5">
-              <span class="absolute left-0 text-accent">▸</span>
-              {item}
-            </li>
-          ))
-        }
-      </ul>
-    </Section>
-
-    <Section title="Honest lessons from the build">
-      <div class="space-y-9">
-        {
-          lessons.map((story) => (
-            <div class="border-b border-line pb-8 last:border-b-0">
-              <h3 class="text-sm text-accent leading-relaxed">{story.title}</h3>
-              <p class="mt-2.5 text-sm text-muted leading-relaxed">{story.body}</p>
-              <p class="mt-3 text-sm leading-relaxed">{story.lesson}</p>
-            </div>
-          ))
-        }
-      </div>
-    </Section>
-
     <Section title="How success is measured">
       <p class="text-sm text-muted leading-relaxed mb-6">
         Each stage has a number to hit before the next one starts.
@@ -461,8 +328,8 @@ LiveKit room ◀── joins as agent ── Adhara (Python): room agent
           <span class="absolute left-0 text-accent">▸</span>
           <span class="text-fg">The panel in the demo is scripted,</span> not
           live AI. Real voices and speech recognition, real grading,
-          accounts, payments and the backend services (Mirzam, Adhara) are
-          designed and contracted, not built — that starts at S1.
+          accounts, payments and the backend services are designed and
+          contracted, not built — that starts at S1.
         </li>
         <li class="relative pl-5">
           <span class="absolute left-0 text-accent">▸</span>
