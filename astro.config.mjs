@@ -11,6 +11,11 @@ export default defineConfig({
   site: "https://thegh0xt.vercel.app",
   output: "server",
 
+  // The project was renamed from Sirius to Brnq; keep old links working.
+  redirects: {
+    "/work/sirius": "/work/brnq",
+  },
+
   integrations: [
     tailwind(),
     react(),
