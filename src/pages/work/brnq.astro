@@ -7,21 +7,21 @@ import Prompt from "../../components/Prompt.astro";
 import Section from "../../components/Section.astro";
 import CapabilityRow from "../../components/CapabilityRow.astro";
 
-const LIVE = "https://sirius.outposthq.workers.dev/";
+const LIVE = "https://brnq.app";
 const WAITLIST = "https://tally.so/r/rjzXoN";
 
 const links = [
-  { title: "Live demo", url: LIVE },
+  { title: "brnq.app", url: LIVE },
   { title: "Waitlist", url: WAITLIST },
 ];
 
-// Verified against the repositories and the engineering logs on 2026-10-05.
+// Verified against the repositories on 2026-10-09.
 const stats = [
   { value: "S0", label: "stage — clickable prototype, invented data" },
-  { value: "380", label: "unit tests: lint, types, build, bundle budget, privacy check" },
-  { value: "115+", label: "Playwright e2e tests, at 1440 / 390 / 360 px" },
-  { value: "275", label: "contract tests in the backend monorepo" },
-  { value: "25", label: "merged PRs across both repos so far" },
+  { value: "573", label: "unit tests: lint, types, build, bundle budget, privacy check" },
+  { value: "438", label: "Playwright e2e runs, at 1440 / 390 / 360 px" },
+  { value: "43", label: "merged PRs across both repos so far" },
+  { value: "7 Oct", label: "brnq.app went public, landing prerendered" },
   { value: "0", label: "provider keys or model hosts in the web bundle" },
 ];
 
@@ -46,44 +46,51 @@ const journey = [
   {
     step: "01",
     name: "Landing",
-    body: "The pitch, how it works, the panel, pricing, FAQ, waitlist.",
-    src: "/work/sirius/hero.png",
-    alt: "Sirius landing page: “Rehearse it out loud before it counts.” beside a live demo session showing a three-person panel, a mid-interview interruption, and a debrief snippet reading “Solid until I pushed. Then they hedged about their own work.”",
+    body: "The pitch, how it works, who it's for, pricing, FAQ, waitlist.",
+    src: "/work/brnq/hero.png",
+    alt: "Brnq landing page: “Practice the conversation before it counts.” beside a demo session showing a three-person panel at Lumon Industries, Amara Obi asking “How did you keep the customer team in the loop?”, and a debrief snippet: “Solid until I pushed. Then they hedged about their own work.”",
   },
   {
     step: "02",
-    name: "Pricing",
-    body: "Sold as sessions, metered as minutes. Annual plans release sessions monthly rather than all at once — for many Nigerian users the real barrier is a large one-off dollar charge, not the sticker price.",
-    src: "/work/sirius/pricing.png",
-    alt: "Pricing section: Free, Single session (₦8,000), Pro (₦16,000/mo) and Advanced (₦40,000/mo, Recommended), with a monthly/annual and naira/dollar toggle.",
+    name: "Who it's for",
+    body: "The conversations change as you rise; the practice doesn't. Four career stages, from your first job interview to a board conversation. The interview is in the demo; the standup, pushing back and telling a senior leader no come at launch; the rest are added as they're tested.",
+    src: "/work/brnq/career-path.png",
+    alt: "Who it's for: a four-stage career path — Starting out, Growing, Leading, At the top — each with its own situations, tagged “In the demo”, “At launch” or “Coming”.",
   },
   {
     step: "03",
-    name: "Set-up",
-    body: "Situation, company and role, optional context (a job description, kept in memory and never uploaded), Rehearsal or Real mode, panel size, and an invite for a real human — a panelist, a coach, or an observer. The panel's goals stay hidden until the debrief.",
-    src: "/work/sirius/setup.png",
-    alt: "Set-up screen: situation set to Behavioral interview at Lumon Industries for a Backend engineer role, a job description attached, Rehearsal mode, a 3:1 panel, and a coach invited by link — with the panel listed on the right, goals hidden.",
+    name: "Pricing",
+    body: "Sold as sessions, metered as minutes. Annual plans release sessions monthly rather than all at once — for many Nigerian users the real barrier is a large one-off dollar charge, not the sticker price.",
+    src: "/work/brnq/pricing.png",
+    alt: "Pricing section: “Pay for the rehearsals you need.” Free (2 × 10 min), Single session (₦8,000), Pro (₦16,000/mo) and Advanced (₦40,000/mo, Recommended), with monthly/annual and naira/dollar toggles.",
   },
   {
     step: "04",
-    name: "The room",
-    body: "Persona tiles with speaking rings, live captions, a transcript/notes/people panel, and a panelist cutting in mid-answer. Here Tom Hale interrupts at 00:46 — “Sorry, let me stop you...” — with a toast coaching you through it: “Tom cut in. Take a breath, then answer.” Ada Okafor sits in as the invited coach, who can pause the room at any point.",
-    src: "/work/sirius/room.png",
-    alt: "The room mid-interruption: Tom Hale's tile outlined red and labelled “Cut in”, his line “Sorry, let me stop you. You” cut off in the transcript after Ngozi Eze asks “Tell me about a time you owned something that went wrong”, a toast reading “Tom cut in. Take a breath, then answer”, and Ada Okafor present as the invited coach.",
+    name: "Set-up",
+    body: "Situation, company and role, optional context (a job description, kept in memory and never uploaded), Rehearsal or Real mode, panel size, and an invite for a real human — a panelist, a coach, or an observer. The panel's goals stay hidden until the debrief.",
+    src: "/work/brnq/setup.png",
+    alt: "Set-up screen: Behavioral interview at Lumon Industries for a Backend engineer role, a job description attached, Rehearsal mode, a 3:1 panel, and Ada Okafor joined as coach via a brnq.app link — with Hadiza Mustapha, Tom Hale and Amara Obi listed on the right, goals hidden.",
   },
   {
     step: "05",
-    name: "Intent",
-    body: "One line, up to 140 characters, sealed before any feedback. The panel never sees it — it's there to compare against how you were heard.",
-    src: "/work/sirius/intent.png",
-    alt: "Intent screen: “In one line, what were you trying to get across?” with a text box reading “Show that I led the payments migration and fixed what broke”, capped at 140 characters, with a Skip option.",
+    name: "The room",
+    body: "Persona tiles with speaking rings, live captions, a transcript/notes/people panel, and a panelist cutting in mid-answer. Here Tom Hale cuts in at 00:07 — “Sorry, let me stop you...” — because you've been talking for 90 seconds, and the room coaches you through it: “Tom cut in. Take a breath, then answer.” Ada Okafor sits in as the invited coach, who can pause the room at any point.",
+    src: "/work/brnq/room.png",
+    alt: "The room mid-interruption: Tom Hale's tile outlined in coral and labelled “Cut in” under a note reading “You've been talking for 90 seconds.”, his line “Sorry, let me stop you. You” in the transcript after Hadiza Mustapha asks “Tell me about a time you owned something that went wrong”, a prompt reading “Tom cut in. Take a breath, then answer”, and Ada Okafor present as the invited coach.",
   },
   {
     step: "06",
+    name: "Intent",
+    body: "One line, up to 140 characters, sealed before any feedback. The panel never sees it — it's there to compare against how you were heard.",
+    src: "/work/brnq/intent.png",
+    alt: "Intent screen: “In one line, what were you trying to get across?” with a text box reading “Show that I led the payments migration and fixed what broke”, capped at 140 characters, with a Skip option.",
+  },
+  {
+    step: "07",
     name: "The debrief",
     body: "Each panelist's read beside your intent, their hidden goal now revealed, one thing to fix, calm-versus-under-pressure measures, and the filler list. Every number opens the exact moment in the transcript it came from.",
-    src: "/work/sirius/debrief.png",
-    alt: "Debrief screen: three panelist cards reading the session differently (Unsure, Lost, Won), “One thing to fix next: Say ‘I’ when it was you” with “we” × 6 and a cut-in moment as evidence, calm-vs-pressure pace and pause numbers, and a filler list.",
+    src: "/work/brnq/debrief.png",
+    alt: "Debrief screen, “How the panel heard you”: Hadiza Mustapha (Unsure), Tom Hale (Lost) and Amara Obi (Won), each with their read and their hidden goal now shown; “One thing to fix next: Say ‘I’ when it was you” with “we” × 6 and a cut-in at 01:44 as evidence; calm-vs-pressure pace and pause numbers; and a filler list.",
   },
 ];
 
@@ -96,18 +103,18 @@ const stageGates = [
 const stack = [
   { label: "Web", items: ["React 19", "TypeScript", "Vite"] },
   { label: "Type", items: ["Onest — UI", "Young Serif — spoken lines", "JetBrains Mono — numbers", "Bagel Fat One — headlines"] },
-  { label: "Hosting", items: ["Cloudflare Workers static assets", "per-PR preview URLs behind Cloudflare Access"] },
+  { label: "Hosting", items: ["Cloudflare Workers static assets", "brnq.app custom domain", "prerendered landing", "per-PR preview URLs behind Cloudflare Access"] },
   { label: "Planned", items: ["Go · Python backend", "Paystack"] },
   { label: "Quality", items: ["pnpm verify", "Playwright", "design-token check"] },
 ];
 
-const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
+const ogImage = new URL("/work/brnq/hero.png", Astro.site ?? Astro.url.origin)
   .href;
 ---
 
 <Base
-  title="Sirius — Case study — Adetoye Anointing"
-  description="A rehearsal room for the conversations that decide careers — a panel of AI interviewers with hidden goals, and a debrief where every score opens the exact words it came from. S0 prototype, built solo."
+  title="Brnq — Case study — Adetoye Anointing"
+  description="Brnq (said brink) is a practice room for the conversations that decide careers — an AI panel with hidden goals, and a debrief where every score opens the exact words it came from. S0 prototype, built solo."
   image={ogImage}
 >
   <Nav />
@@ -115,21 +122,25 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
   <main class="max-w-2xl mx-auto px-4 py-8">
     <header class="mt-12 mb-14">
       <Prompt path="~/work" caret={false}>
-        <span class="text-fg">cat sirius.md</span>
+        <span class="text-fg">cat brnq.md</span>
       </Prompt>
 
-      <h1 class="mt-6 text-2xl leading-tight text-accent">Sirius</h1>
+      <h1 class="mt-6 text-2xl leading-tight text-accent">Brnq</h1>
 
       <p class="mt-3 text-base leading-relaxed">
-        A rehearsal room for the conversations that decide careers.
+        Practice the conversation before it counts.
       </p>
 
       <p class="mt-4 text-sm text-muted leading-relaxed">
-        You answer a panel of AI interviewers out loud. Each has a voice, a
-        role and a goal they won't tell you. Then a debrief shows how each of
-        them heard you, points at your exact words, and gives you one thing
-        to fix. Built solo, on a React prototype now, with a Go + Python
-        backend designed contract-first for the stage after this one.
+        Brnq (said <em>brink</em>) is a practice room for the conversations
+        that decide careers: the interview, the standup, telling a senior
+        leader no. You speak out loud to an AI panel that plays the people in
+        the room. Each has a voice, a role and a goal they won't tell you.
+        Then a debrief shows how each of them heard you, points at your exact
+        words, and gives you one thing to fix. Built solo in Lagos, for
+        African professionals in any field: a React prototype now, with a
+        Go + Python backend designed contract-first for the stage after this
+        one.
       </p>
 
       <div class="mt-6 flex flex-wrap gap-2">
@@ -164,10 +175,10 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
     </header>
 
     <img
-      src="/work/sirius/hero.png"
-      alt="Sirius landing page: “Rehearse it out loud before it counts.” beside a live demo session showing a three-person panel, a mid-interview interruption, and a debrief snippet reading “Solid until I pushed. Then they hedged about their own work.”"
-      width="1577"
-      height="1193"
+      src="/work/brnq/hero.png"
+      alt="Brnq landing page: “Practice the conversation before it counts.” beside a demo session showing a three-person panel at Lumon Industries and a debrief snippet: “Solid until I pushed. Then they hedged about their own work.”"
+      width="1905"
+      height="1275"
       loading="eager"
       class="mb-16 w-full border border-line"
     />
@@ -209,7 +220,7 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
     <Section title="The insight that shapes everything">
       <p class="text-sm leading-relaxed">
         <span class="text-fg">What you meant → what you said → how they heard it → what happened next.</span>
-        Sirius works on the gaps between those steps. It never teaches “the
+        Brnq works on the gaps between those steps. It never teaches “the
         correct sentence” — it shows how a particular audience is likely to
         hear you, and you decide what to change. A good answer to “tell me
         about yourself” is different for a startup founder, a Big Tech
@@ -227,10 +238,10 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
       <div class="border-t border-line">
         <div class="flex flex-col sm:flex-row gap-1 sm:gap-6 py-3 border-b border-line">
           <span class="text-[10px] uppercase tracking-widest text-accent sm:w-1/2">
-            Sirius always →
+            Brnq always →
           </span>
           <span class="text-[10px] uppercase tracking-widest text-muted sm:w-1/2">
-            Sirius never →
+            Brnq never →
           </span>
         </div>
         {
@@ -260,8 +271,8 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
       <p class="text-sm text-muted leading-relaxed mb-8">
         Everything below runs on scripted, invented data — labelled “Demo,
         invented data” on every screen. The fictional company is “Lumon
-        Industries”, a small nod to <em>Severance</em>; the personas (Ngozi
-        Eze, Tom Hale, Amara Obi, and coach Ada Okafor) are invented too.
+        Industries”, a small nod to <em>Severance</em>; the personas (Hadiza
+        Mustapha, Tom Hale, Amara Obi, and coach Ada Okafor) are invented too.
       </p>
 
       <div class="space-y-10">
@@ -336,7 +347,7 @@ const ogImage = new URL("/work/sirius/hero.png", Astro.site ?? Astro.url.origin)
         </li>
         <li class="relative pl-5">
           <span class="absolute left-0 text-accent">▸</span>
-          <span class="text-fg">No outcome claims.</span> Sirius doesn't
+          <span class="text-fg">No outcome claims.</span> Brnq doesn't
           claim to improve interview outcomes. That's what the stage gates
           above will measure, not what the prototype asserts.
         </li>

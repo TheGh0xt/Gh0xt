@@ -1,10 +1,10 @@
 [
   {
-    "name": "Sirius",
-    "description": "A practice room for the conversations that decide careers. You answer a panel of AI interviewers out loud, each with a voice, a role and a goal they won't tell you. Then a debrief shows how each of them heard you, points at your exact words, and gives you one thing to fix. Built around one rule: no score without the evidence behind it.",
-    "caseStudy": "/work/sirius",
+    "name": "Brnq",
+    "description": "Brnq (said brink) is a practice room for the conversations that decide careers: interviews, standups, telling a senior leader no. You speak out loud to an AI panel that plays the people in the room, each with a voice, a role and a goal they won't tell you. Then a debrief shows how each of them heard you, points at your exact words, and gives you one thing to fix. Built around one rule: no score without the evidence behind it.",
+    "caseStudy": "/work/brnq",
     "links": [
-      { "label": "Live", "url": "https://sirius.outposthq.workers.dev/" },
+      { "label": "Live", "url": "https://brnq.app" },
       { "label": "Waitlist", "url": "https://tally.so/r/rjzXoN" }
     ],
     "meta": ["Prototype · S0", "TypeScript · React", "Go · Python (planned)"]
